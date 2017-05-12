@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.0\jars\libs\internal_impl-23.0.0.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="8bd336eeae661e8311330284897ee07f8ebaa297">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\internal_impl-23.0.0_224cfdcbe91ddfd05e0354c0d4adf0c6f089ff4c.jar" />
+    </item>
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="8413c27b45b7fe61dca4a98159f65e2cee215f5a">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-23.0.0_7b56a8f6189e387b3483943837722e40a4d5bb1d.jar" />
+    </item>
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\26.0.0-alpha1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="e176fd06c2ad5b50a2f5cb4de6000a83a7cb48f5">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-cardview-v7-26.0.0-alpha1_6e4df7dd03215f878c7eb31115f1d00a3e63c6a2.jar" />
+    </item>
+    <item
+        jar="C:\Users\root\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\26.0.0-alpha1\support-annotations-26.0.0-alpha1.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="023ee503b631f69511e335a061ea008f8da60f40">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\support-annotations-26.0.0-alpha1_0dc73bf289e33a5c579ad15f0e528ba5fb22dc57.jar" />
+    </item>
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="4fcf0b1879f8caf497c073e1432d398e9e2988c1">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-23.0.0_db9df6e5e5d820255c79fe54cd9fabf61492a844.jar" />
+    </item>
+
+</items>

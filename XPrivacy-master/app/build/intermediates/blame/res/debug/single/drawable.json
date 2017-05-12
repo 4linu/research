@@ -1,0 +1,474 @@
+[
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\used_holo_dark_grayed.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\used_holo_dark_grayed.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\check_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\check_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\used_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\used_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\used_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\used_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\info_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\info_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\list_item_pressed_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\list_item_pressed_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\expander_ic_maximized_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\expander_ic_maximized_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_borderless_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_borderless_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_colored_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_radio_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_radio_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_spinner_textfield_background_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_spinner_textfield_background_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\info_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\info_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\padlock_question_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\padlock_question_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\expander_ic_maximized_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\expander_ic_maximized_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_list_selector_background_transition_holo_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\internet_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\internet_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_switch_thumb_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_switch_thumb_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ratingbar_full_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_ratingbar_full_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\whitelist_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\whitelist_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\used_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\used_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_textfield_search_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_textfield_search_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_list_selector_background_transition_holo_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_top_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_cab_background_top_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_item_background_holo_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\tutorial_background_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\tutorial_background_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\presence_busy.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\presence_busy.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_internal_bg.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_cab_background_internal_bg.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\expander_ic_maximized_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\expander_ic_maximized_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\internet_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\internet_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\progress_horizontal_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\progress_horizontal_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_textfield_search_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_textfield_search_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_item_background_holo_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_item_background_holo_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_spinner_textfield_background_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_spinner_textfield_background_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\tutorial_background_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\tutorial_background_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\granted_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\granted_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\system_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\system_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_default_mtrl_shape.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_default_mtrl_shape.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_list_selector_background_transition_holo_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\system_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\system_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\padlock_question_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\padlock_question_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_tab_indicator_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_tab_indicator_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\info_book_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\info_book_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\info_book_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\info_book_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\apps.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\apps.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_internal_bg.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_cab_background_internal_bg.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_list_selector_background_transition_holo_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\tutorial_background_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\tutorial_background_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_check_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_check_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\internet_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\internet_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_colored_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\expander_ic_minimized_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\expander_ic_minimized_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\system_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\system_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_borderless_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_borderless_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_edit_text_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_edit_text_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\expander_ic_minimized_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\expander_ic_minimized_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\whitelist_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\whitelist_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_switch_thumb_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_switch_thumb_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_dialog_material_background_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_dialog_material_background_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\granted_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\granted_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\info_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\info_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\padlock_question_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\padlock_question_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\expander_ic_maximized_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\expander_ic_maximized_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\system_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\system_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_default_mtrl_shape.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_default_mtrl_shape.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ondemand.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\ondemand.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_text_cursor_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_text_cursor_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_check_buttonless_on.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\btn_check_buttonless_on.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\progress_horizontal_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\progress_horizontal_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\frozen_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\frozen_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_dialog_material_background_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_dialog_material_background_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\padlock_question_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\padlock_question_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\list_item_pressed_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\list_item_pressed_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\tutorial_background_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\tutorial_background_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\check_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\check_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ondemand.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\ondemand.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\check_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\check_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\used_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\used_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_top_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_cab_background_top_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_dialog_material_background_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_dialog_material_background_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\used_holo_dark_grayed.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\used_holo_dark_grayed.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\whitelist_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\whitelist_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_tab_indicator_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_tab_indicator_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\used_holo_light_grayed.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\used_holo_light_grayed.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\used_holo_light_grayed.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\used_holo_light_grayed.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\presence_busy.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\presence_busy.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\list_item_pressed_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\list_item_pressed_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\check_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\check_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\expander_ic_minimized_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\expander_ic_minimized_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\internet_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\internet_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_holo_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_list_selector_holo_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_dialog_material_background_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_dialog_material_background_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_text_cursor_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_text_cursor_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\frozen_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\frozen_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\apps.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\apps.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\whitelist_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\whitelist_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_holo_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_list_selector_holo_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_holo_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_list_selector_holo_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_check_buttonless_on.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\btn_check_buttonless_on.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\info_book_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\info_book_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\info_book_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\info_book_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\indicator_input_error.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\indicator_input_error.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_radio_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_radio_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_holo_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_list_selector_holo_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\expander_ic_minimized_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\expander_ic_minimized_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\granted_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\granted_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_item_background_holo_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\indicator_input_error.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\indicator_input_error.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\progress_horizontal_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\progress_horizontal_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\info_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\info_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\granted_holo_light.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\granted_holo_light.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\list_item_pressed_light.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\list_item_pressed_light.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ratingbar_full_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_ratingbar_full_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\frozen_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\src\\main\\res\\drawable\\frozen_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\progress_horizontal_dark.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\progress_horizontal_dark.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\frozen_holo_dark.png",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\src\\main\\res\\drawable\\frozen_holo_dark.png"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_check_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_btn_check_material.xml"
+    },
+    {
+        "merged": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_edit_text_material.xml",
+        "source": "D:\\Workspace\\AndroidStudio\\xprivacy_git\\xprivacy\\XPrivacy-master\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.0\\res\\drawable\\abc_edit_text_material.xml"
+    }
+]
