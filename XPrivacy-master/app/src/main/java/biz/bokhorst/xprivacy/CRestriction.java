@@ -1,5 +1,7 @@
 package biz.bokhorst.xprivacy;
 
+import android.util.Log;
+
 import java.util.Date;
 
 public class CRestriction {
@@ -10,6 +12,7 @@ public class CRestriction {
 	private String mExtra;
 	public boolean restricted;
 	public boolean asked;
+	public boolean fakeData;
 
 	public CRestriction(int uid, String restrictionName, String methodName, String extra) {
 		mExpiry = new Date().getTime() + PrivacyManager.cRestrictionCacheTimeoutMs;
@@ -19,6 +22,7 @@ public class CRestriction {
 		mExtra = extra;
 		restricted = false;
 		asked = false;
+		fakeData = false;
 	}
 
 	public CRestriction(PRestriction restriction, String extra) {
@@ -29,6 +33,7 @@ public class CRestriction {
 		mExtra = extra;
 		restricted = restriction.restricted;
 		asked = restriction.asked;
+		fakeData = restriction.fakeData;
 	}
 
 	public void setExpiry(long time) {
@@ -84,6 +89,6 @@ public class CRestriction {
 
 	@Override
 	public String toString() {
-		return mUid + ":" + mRestrictionName + "/" + mMethodName + "(" + mExtra + ")" + "=" + restricted + "/" + asked;
+		return mUid + ":" + mRestrictionName + "/" + mMethodName + "(" + mExtra + ")" + "=" + restricted + "/" + asked + "/" + fakeData;
 	}
 }

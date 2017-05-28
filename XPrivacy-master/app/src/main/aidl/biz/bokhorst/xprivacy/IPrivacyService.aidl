@@ -13,6 +13,7 @@ interface IPrivacyService {
 	void setRestriction(in PRestriction restriction);
 	void setRestrictionList(in List<PRestriction> listRestriction);
 	PRestriction getRestriction(in PRestriction restriction, boolean usage, String secret);
+	PRestriction getFakeData(in PRestriction restriction, boolean usage, String secret);
 	List<PRestriction> getRestrictionList(in PRestriction selector);
 	boolean isRestrictionSet(in PRestriction restriction);
 	void deleteRestrictions(int uid, String restrictionName);

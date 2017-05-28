@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                                     while ((line = raf.readLine()) != null) {
                                         buff += line + "\n";
                                     }
+                                    raf.close();
                                 }
                             }
                             tv1.setText(buff);

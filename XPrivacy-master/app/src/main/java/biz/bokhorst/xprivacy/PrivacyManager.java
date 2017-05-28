@@ -26,6 +26,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Location;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Process;
 import android.os.RemoteException;
@@ -169,9 +170,10 @@ public class PrivacyManager {
 	private static Map<String, List<Hook>> mPermission = new LinkedHashMap<String, List<Hook>>();
 	private static Map<CSetting, CSetting> mSettingsCache = new HashMap<CSetting, CSetting>();
 	private static Map<CSetting, CSetting> mTransientCache = new HashMap<CSetting, CSetting>();
-	private static Map<CRestriction, CRestriction> mRestrictionCache = new HashMap<CRestriction, CRestriction>();
+	public static Map<CRestriction, CRestriction> mRestrictionCache = new HashMap<CRestriction, CRestriction>();
 	private static SparseArray<Map<String, Boolean>> mPermissionRestrictionCache = new SparseArray<Map<String, Boolean>>();
 	private static SparseArray<Map<Hook, Boolean>> mPermissionHookCache = new SparseArray<Map<Hook, Boolean>>();
+	private static Map<CRestriction, CRestriction> mFakeDataCache = new HashMap<CRestriction, CRestriction>();
 
 	// Meta data
 
@@ -327,8 +329,14 @@ public class PrivacyManager {
 	}
 
 	public static boolean getRestrictionExtra(final XHook hook, int uid, String restrictionName, String methodName,
-			String extra, String secret) {
+											  String extra, String secret) {
 		return getRestrictionExtra(hook, uid, restrictionName, methodName, extra, null, secret);
+	}
+
+
+	public static boolean getFakeDataExtra(final XHook hook, int uid, String restrictionName, String methodName,
+											  String extra, String secret) {
+		return getFakeDataExtra(hook, uid, restrictionName, methodName, extra, null, secret);
 	}
 
 	public static boolean getRestrictionExtra(final XHook hook, int uid, String restrictionName, String methodName,
@@ -373,23 +381,140 @@ public class PrivacyManager {
 		CRestriction key = new CRestriction(uid, restrictionName, methodName, extra);
 		synchronized (mRestrictionCache) {
 			if (mRestrictionCache.containsKey(key)) {
+			//	Util.log(hook, Log.WARN, "Inside PrivacyManager.getRestrictionExtra - found in mRestrictionCache");
 				CRestriction entry = mRestrictionCache.get(key);
 				if (!entry.isExpired()) {
 					cached = true;
 					result.restricted = entry.restricted;
 					result.asked = entry.asked;
+					result.fakeData = entry.fakeData;
 				}
+			}
+			else {
+			//	Util.log(hook, Log.WARN, "Inside PrivacyManager.getRestrictionExtra - not found in mRestrictionCache");
 			}
 		}
 
 		// Get restriction
 		if (!cached)
 			try {
+				//Util.log(hook, Log.WARN, "Inside PrivacyManager.getRestrictionExtra - not cached");
 				PRestriction query = new PRestriction(uid, restrictionName, methodName, false);
 				query.extra = extra;
 				query.value = value;
 				PRestriction restriction = PrivacyService.getRestrictionProxy(query, true, secret);
 				result.restricted = restriction.restricted;
+				result.fakeData = restriction.fakeData;
+				if (restriction.debug)
+					Util.logStack(null, Log.WARN);
+				Util.log(null, Log.WARN, "PrivacyManager.getRestrictionExtra, after call to getRestrictionProxy, result=" + result);
+				// Add to cache
+				if (result.time >= 0) {
+					key.restricted = result.restricted;
+					key.asked = result.asked;
+					key.fakeData = result.fakeData;
+					if (result.time > 0) {
+						key.setExpiry(result.time);
+				//		Util.log(null, Log.WARN, "Caching " + result + " until " + new Date(result.time));
+					}
+					synchronized (mRestrictionCache) {
+						if (mRestrictionCache.containsKey(key))
+							mRestrictionCache.remove(key);
+						mRestrictionCache.put(key, key);
+					//	Util.log(null, Log.WARN, "Updating cache, key=" + key);
+					}
+				}
+			} catch (Throwable ex) {
+				Util.bug(hook, ex);
+			}
+
+		// Result
+		long ms = System.currentTimeMillis() - start;
+		Util.log(hook, ms < cWarnServiceDelayMs ? Log.INFO : Log.WARN,
+				String.format("Get client restriction %s%s %d ms", result, (cached ? " (cached)" : ""), ms));
+
+		return result.restricted;
+	}
+
+	public static boolean getFakeDataExtra(final XHook hook, int uid, String restrictionName, String methodName,
+											  String extra, String value, String secret) {
+		long start = System.currentTimeMillis();
+		PRestriction result = new PRestriction(uid, restrictionName, methodName, false, true);
+		Util.log(hook, Log.WARN, "Inside PrivacyManager.getFakeDataExtra");
+		// Check uid
+		if (uid <= 0)
+			return false;
+
+		// Check secret
+		if (secret == null) {
+			Util.log(null, Log.ERROR, "Secret missing restriction=" + restrictionName + "/" + methodName);
+			Util.logStack(hook, Log.ERROR);
+			secret = "";
+		}
+
+
+		// Check usage
+		if (methodName == null || methodName.equals("")) {
+			Util.log(hook, Log.ERROR, "Method empty");
+			Util.logStack(hook, Log.ERROR);
+		} else if (getHook(restrictionName, methodName) == null) {
+			Util.log(hook, Log.ERROR, "Unknown method=" + methodName);
+			Util.logStack(hook, Log.ERROR);
+		}
+		try {
+			Util.log(hook, Log.WARN, "Inside PrivacyManager.getFakeDataExtra, before calling getFakeDataProxy");
+			PRestriction query = new PRestriction(uid, restrictionName, methodName, false);
+			query.extra = extra;
+			query.value = value;
+			PRestriction restriction = PrivacyService.getFakeDataProxy(query, true, secret);
+			result.restricted = restriction.restricted;
+			result.fakeData = restriction.fakeData;
+			result.time = restriction.time;
+			Util.log(null, Log.WARN, "PrivacyManager.getFakeDataExtra, after call to getFakeDataProxy, result=" + result + ", restriction=" + restriction);
+
+		} catch (Throwable ex) {
+			Util.bug(hook, ex);
+			Util.log(hook, Log.WARN, "Exception raised");
+		}
+
+
+		// Check cache
+/*		boolean cached = false;
+		CRestriction key = new CRestriction(uid, restrictionName, methodName, extra);
+		if (isFakeDataEnabled(key))
+		{
+			Util.log(hook,Log.WARN, "Inside PrivacyManager.getFakeDataExtra - found restriction in cache, methtodName=" + methodName + ", restrictionName=" + restrictionName + "extra=" + extra);
+			cached = true;
+			result.restricted = false;
+			result.asked = true;
+			result.fakeData = true;
+			Util.log(hook,Log.WARN, "Inside cache->result=" + result.toString());
+		}
+/*		synchronized (mRestrictionCache) {
+			if (mRestrictionCache.containsKey(key)) {
+				Util.log(hook,Log.WARN, "Inside PrivacyManager.getFakeDataExtra - found restriction in cache, methtodName=" + methodName + ", restrictionName=" + restrictionName + "extra=" + extra);
+				CRestriction entry = mRestrictionCache.get(key);
+				if (!entry.isExpired()) {
+					cached = true;
+					result.restricted = entry.restricted;
+					result.asked = entry.asked;
+					result.fakeData = entry.fakeData;
+					Util.log(hook,Log.WARN, "Inside cache->result=" + result.toString());
+				}
+			}
+		}
+
+
+		// Get restriction
+		if (!cached)
+*/		/*	try {
+				Util.log(hook, Log.WARN, "Inside PrivacyManager.getFakeDataExtra, before calling getRestrictionProxy");
+				PRestriction query = new PRestriction(uid, restrictionName, methodName, false);
+				query.extra = extra;
+				query.value = value;
+				PRestriction restriction = PrivacyService.getRestrictionProxy(query, true, secret);
+				result.restricted = restriction.restricted;
+				result.fakeData = restriction.fakeData;
 				if (restriction.debug)
 					Util.logStack(null, Log.WARN);
 
@@ -397,6 +522,7 @@ public class PrivacyManager {
 				if (result.time >= 0) {
 					key.restricted = result.restricted;
 					key.asked = result.asked;
+					key.fakeData = result.fakeData;
 					if (result.time > 0) {
 						key.setExpiry(result.time);
 						Util.log(null, Log.WARN, "Caching " + result + " until " + new Date(result.time));
@@ -409,14 +535,46 @@ public class PrivacyManager {
 				}
 			} catch (Throwable ex) {
 				Util.bug(hook, ex);
+				Util.log(hook, Log.WARN, "Exception raised");
 			}
-
+*/
 		// Result
 		long ms = System.currentTimeMillis() - start;
-		Util.log(hook, ms < cWarnServiceDelayMs ? Log.INFO : Log.WARN,
-				String.format("Get client %s%s %d ms", result, (cached ? " (cached)" : ""), ms));
+		Util.log(hook, Log.WARN, String.format("Get client fakeDataExtra %s %d ms", result, ms));
 
-		return result.restricted;
+		return result.fakeData;
+	}
+
+
+	public static boolean isFakeDataEnabled(CRestriction key)
+	{
+		boolean enabled = false;
+		Util.log(Log.WARN, "Inside PrivacyManager.isFakeDataEnabled");
+		synchronized (mFakeDataCache) {
+			Util.log(Log.WARN, "dumping mFakeDataCache " + mFakeDataCache.toString());
+			if (mFakeDataCache.containsKey(key)) {
+				Util.log(Log.WARN, "Inside PrivacyManager.isFakeDataEnabled, restriction found");
+				CRestriction cr = mFakeDataCache.get(key);
+				if (cr.isExpired()) {
+					mFakeDataCache.remove(key);
+				} else {
+					enabled = true;
+				}
+			}
+		}
+		return enabled;
+	}
+
+	public static void updateFakeDataCache(CRestriction key)
+	{
+		Util.log(Log.WARN, "Inside PrivacyManager.updateFakeDataCache");
+		synchronized (mFakeDataCache) {
+			if (mFakeDataCache.containsKey(key)) {
+				mFakeDataCache.remove(key);
+			}
+			mFakeDataCache.put(key, key);
+			Util.log(Log.WARN, "mFakeDataCache " + mFakeDataCache.toString());
+		}
 	}
 
 	public static void setRestriction(int uid, String restrictionName, String methodName, boolean restricted,

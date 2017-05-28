@@ -83,6 +83,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 	private static final String cTableRestriction = "restriction";
 	private static final String cTableUsage = "usage";
 	private static final String cTableSetting = "setting";
+	private static final String cTableFakeData = "fakedata";
 
 	private static final int cCurrentVersion = 481;
 	private static final String cServiceName = "xprivacy481";
@@ -258,8 +259,28 @@ public class PrivacyService extends IPrivacyService.Stub {
 				PRestriction result = new PRestriction(restriction);
 				result.restricted = false;
 				return result;
-			} else
+			} else {
+				Util.log(Log.WARN, "Inside PrivacyService.getRestrictionProxy, before call to getRestriction");
 				return client.getRestriction(restriction, usage, secret);
+			}
+		}
+	}
+
+	public static PRestriction getFakeDataProxy(final PRestriction restriction, boolean usage, String secret)
+			throws RemoteException {
+		if (isRegistered())
+			return mPrivacyService.getFakeData(restriction, usage, secret);
+		else {
+			IPrivacyService client = getClient();
+			if (client == null) {
+				Log.w("XPrivacy", "No client for " + restriction);
+				PRestriction result = new PRestriction(restriction);
+				result.restricted = false;
+				return result;
+			} else {
+				Util.log(Log.WARN, "Inside PrivacyService.getFakeDataProxy, before call to client.getFakeData");
+				return client.getFakeData(restriction, usage, secret);
+			}
 		}
 	}
 
@@ -340,6 +361,208 @@ public class PrivacyService extends IPrivacyService.Stub {
 		}
 	}
 
+	private void setFakeDataInternal(PRestriction restriction) throws RemoteException
+	{
+		try {
+			SQLiteDatabase db = getDb();
+			if (db == null)
+				return;
+			// 0 not restricted, ask
+			// 1 restricted, ask
+			// 2 not restricted, asked
+			// 3 restricted, asked
+
+			mLock.writeLock().lock();
+			try {
+				db.beginTransaction();
+				try {
+					//db.execSQL("CREATE TABLE if not exists fakedata (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, time INTEGER NOT NULL)");
+					// Create method exception record
+					//db.execSQL("CREATE UNIQUE INDEX idx_fakedata ON fakedata(uid, restriction, method)");
+					if (restriction.methodName != null) {
+						ContentValues mvalues = new ContentValues();
+						mvalues.put("uid", restriction.uid);
+						mvalues.put("restriction", restriction.restrictionName);
+						mvalues.put("method", restriction.methodName);
+						mvalues.put("time", restriction.time);
+						db.insertWithOnConflict(cTableFakeData, null, mvalues, SQLiteDatabase.CONFLICT_REPLACE);
+					}
+
+					db.setTransactionSuccessful();
+				} finally {
+					db.endTransaction();
+				}
+			} finally {
+				mLock.writeLock().unlock();
+			}
+		} catch (Throwable ex) {
+			Util.bug(null, ex);
+			throw new RemoteException(ex.toString());
+		}
+	}
+
+	public PRestriction getFakeData(final PRestriction restriction, boolean usage, String secret)
+			throws RemoteException {
+		long start = System.currentTimeMillis();
+		Util.log(Log.WARN, "Inside PrivacyService.getFakeData");
+		// Translate isolated uid
+		restriction.uid = getIsolatedUid(restriction.uid);
+
+		boolean ccached = false;
+		boolean mcached = false;
+		int userId = Util.getUserId(restriction.uid);
+		final PRestriction mresult = new PRestriction(restriction);
+
+		// Disable strict mode
+		ThreadPolicy oldPolicy = StrictMode.getThreadPolicy();
+		ThreadPolicy newPolicy = new ThreadPolicy.Builder(oldPolicy).permitDiskReads().permitDiskWrites().build();
+		StrictMode.setThreadPolicy(newPolicy);
+
+		// No permissions enforced, but usage data requires a secret
+
+		// Sanity checks
+		if (restriction.restrictionName == null) {
+			Util.log(null, Log.WARN, "Get invalid restriction " + restriction);
+			return mresult;
+		}
+		if (usage && restriction.methodName == null) {
+			Util.log(null, Log.WARN, "Get invalid restriction " + restriction);
+			return mresult;
+		}
+
+		// Get meta data
+		Hook hook = null;
+		if (restriction.methodName != null) {
+			hook = PrivacyManager.getHook(restriction.restrictionName, restriction.methodName);
+			if (hook == null)
+				// Can happen after updating
+				Util.log(null, Log.WARN, "Hook not found in service: " + restriction);
+			else if (hook.getFrom() != null) {
+				String version = getSetting(new PSetting(userId, "", PrivacyManager.cSettingVersion, null)).value;
+				if (version != null && new Version(version).compareTo(hook.getFrom()) < 0)
+					if (hook.getReplacedRestriction() == null) {
+						Util.log(null, Log.WARN, "Disabled version=" + version + " from=" + hook.getFrom()
+								+ " hook=" + hook);
+						return mresult;
+					} else {
+						restriction.restrictionName = hook.getReplacedRestriction();
+						restriction.methodName = hook.getReplacedMethod();
+						Util.log(null, Log.WARN, "Checking " + restriction + " instead of " + hook);
+					}
+			}
+		}
+
+		// Process IP address
+		if (restriction.extra != null && Meta.cTypeIPAddress.equals(hook.whitelist())) {
+			int colon = restriction.extra.lastIndexOf(':');
+			String address = (colon >= 0 ? restriction.extra.substring(0, colon) : restriction.extra);
+			String port = (colon >= 0 ? restriction.extra.substring(colon) : "");
+
+			int slash = address.indexOf('/');
+			if (slash == 0) // IP address
+				restriction.extra = address.substring(slash + 1) + port;
+			else if (slash > 0) // Domain name
+				restriction.extra = address.substring(0, slash) + port;
+		}
+		Util.log(Log.WARN, "Inside PrivacyService.getFakeData before isApplication");
+		// Check for system component
+		if (!PrivacyManager.isApplication(restriction.uid)) {
+
+			Util.log(Log.WARN, "Inside PrivacyService.getFakeData, is application");
+			if (!getSettingBool(userId, PrivacyManager.cSettingSystem, false)) {
+				Util.log(Log.WARN, "Inside PrivacyService.getFakeData, setting bool not found");
+				return mresult;
+			}
+		}
+
+		// Check if restrictions enabled
+		if (usage && !getSettingBool(restriction.uid, PrivacyManager.cSettingRestricted, true)) {
+			Util.log(Log.WARN, "Inside PrivacyService.getFakeData, restrictions not enabled");
+				return mresult;
+		}
+
+		// Check if can be restricted
+		if (!PrivacyManager.canRestrict(restriction.uid, getXUid(), restriction.restrictionName,
+				restriction.methodName, false)) {
+			Util.log(Log.WARN, "Inside PrivacyService.getFakeData, PrivacyManager can't restrict");
+			mresult.asked = true;
+		}
+		else {
+
+			try {
+				// Get database reference
+				SQLiteDatabase db = getDb();
+				if (db == null)
+					return mresult;
+
+				// Precompile statement when needed
+
+				String sql = "SELECT time FROM " + cTableFakeData
+						+ " WHERE uid=? AND restriction=? AND method=?";
+				stmtGetRestriction = db.compileStatement(sql);
+
+				Util.log(Log.WARN, "Inside PrivacyService.getFakeData, trying to query");
+				// Execute statement
+				mLock.readLock().lock();
+				try {
+					db.beginTransaction();
+					try {
+	/*
+						String[] list = new String[1];
+						Cursor c = db.rawQuery("SELECT * FROM " + cTableFakeData + ";", list);
+						for (String s : list) {
+							Util.log(Log.WARN, "s=" + s);
+						}
+						while(c.moveToNext()) {
+							Util.log(Log.WARN, "Dumping rows uid=" + c.getLong(0) + ", restrictionName=" + c.getString(1) + ", methodName=" + c.getString(2) + ", time=" + (c.getLong(3) - new Date().getTime()));
+						}
+	*/
+						if (restriction.methodName != null) {
+							try {
+								synchronized (stmtGetRestriction) {
+									stmtGetRestriction.clearBindings();
+									stmtGetRestriction.bindLong(1, restriction.uid);
+									stmtGetRestriction.bindString(2, restriction.restrictionName);
+									stmtGetRestriction.bindString(3, restriction.methodName);
+									long time = stmtGetRestriction.simpleQueryForLong();
+
+									mresult.time = time;
+
+									mresult.fakeData = true;
+									Util.log(Log.WARN, "Inside PrivacyService.getFakeData - synchronized statement, time=" + (time - new Date().getTime()) + ", mresult=" + mresult);
+								}
+							} catch (SQLiteDoneException ignored) {
+							}
+						} else {
+							Util.log(Log.WARN, "Inside PrivacyService.getFakeData - restriction.methodName = null");
+						}
+
+						db.setTransactionSuccessful();
+					} finally {
+						db.endTransaction();
+					}
+				} finally {
+					mLock.readLock().unlock();
+				}
+			} catch (SQLiteException ex) {
+				notifyException(ex);
+				Util.log(Log.WARN, "Inside PrivacyService.getFakeData - SQLiteException");
+			} catch (Throwable ex) {
+				Util.bug(null, ex);
+				Util.log(Log.WARN, "Inside PrivacyService.getFakeData - throwable");
+			} finally {
+				StrictMode.setThreadPolicy(oldPolicy);
+			}
+		}
+
+		long ms = System.currentTimeMillis() - start;
+
+		Util.log(Log.WARN,
+				String.format("Get service inside getFakeData %s, mresult %s %d ms", restriction, mresult, ms));
+
+		return mresult;
+	}
+
 	private void setRestrictionInternal(PRestriction restriction) throws RemoteException {
 		// Validate
 		if (restriction.restrictionName == null) {
@@ -389,21 +612,23 @@ public class PrivacyService extends IPrivacyService.Stub {
 				mLock.writeLock().unlock();
 			}
 
-			// Update cache
-			synchronized (mRestrictionCache) {
-				for (CRestriction key : new ArrayList<CRestriction>(mRestrictionCache.keySet()))
-					if (key.isSameMethod(restriction))
-						mRestrictionCache.remove(key);
 
-				CRestriction key = new CRestriction(restriction, restriction.extra);
-				if (mRestrictionCache.containsKey(key))
-					mRestrictionCache.remove(key);
-				mRestrictionCache.put(key, key);
+				// Update cache
+				synchronized (mRestrictionCache) {
+					for (CRestriction key : new ArrayList<CRestriction>(mRestrictionCache.keySet()))
+						if (key.isSameMethod(restriction))
+							mRestrictionCache.remove(key);
+
+					CRestriction key = new CRestriction(restriction, restriction.extra);
+					if (mRestrictionCache.containsKey(key))
+						mRestrictionCache.remove(key);
+					mRestrictionCache.put(key, key);
+				}
+			} catch (Throwable ex) {
+				Util.bug(null, ex);
+				throw new RemoteException(ex.toString());
 			}
-		} catch (Throwable ex) {
-			Util.bug(null, ex);
-			throw new RemoteException(ex.toString());
-		}
+
 	}
 
 	@Override
@@ -423,7 +648,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 	public PRestriction getRestriction(final PRestriction restriction, boolean usage, String secret)
 			throws RemoteException {
 		long start = System.currentTimeMillis();
-
+		Util.log(Log.WARN, "Inside PrivacyService.getRestriction");
 		// Translate isolated uid
 		restriction.uid = getIsolatedUid(restriction.uid);
 
@@ -507,6 +732,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 						CRestriction cache = mRestrictionCache.get(key);
 						mresult.restricted = cache.restricted;
 						mresult.asked = cache.asked;
+						mresult.fakeData = cache.fakeData;
 					}
 				}
 
@@ -524,6 +750,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 							cresult.asked = crestriction.asked;
 							mresult.restricted = cresult.restricted;
 							mresult.asked = cresult.asked;
+							mresult.fakeData = cresult.fakeData;
 						}
 					}
 
@@ -554,6 +781,8 @@ public class PrivacyService extends IPrivacyService.Stub {
 										long state = stmtGetRestriction.simpleQueryForLong();
 										cresult.restricted = ((state & 1) != 0);
 										cresult.asked = ((state & 2) != 0);
+
+										//cresult.fakeData = ((state & 4) != 0);
 										mresult.restricted = cresult.restricted;
 										mresult.asked = cresult.asked;
 									}
@@ -575,6 +804,9 @@ public class PrivacyService extends IPrivacyService.Stub {
 										if (!mresult.asked)
 											mresult.asked = ((state & 2) != 0);
 										methodFound = true;
+
+										if (mresult.fakeData)
+											cresult.fakeData = mresult.fakeData;//((state & 4) != 0);
 									}
 								} catch (SQLiteDoneException ignored) {
 								}
@@ -647,6 +879,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 					// Update cache
 					if (oResult.ondemand && !oResult.once) {
 						CRestriction okey = new CRestriction(mresult, oResult.whitelist ? restriction.extra : null);
+						Util.log(Log.WARN, "Inside PrivacyService.getRestriction(), after OnDemandDialog, mresult=" + mresult.toString());
 						synchronized (mRestrictionCache) {
 							if (mRestrictionCache.containsKey(okey))
 								mRestrictionCache.remove(okey);
@@ -654,7 +887,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 						}
 					}
 				}
-
+				Util.log(Log.WARN, "Inside PrivacyService.getRestriction(), after OnDemandDialog mresult=" + mresult.toString());
 				// Notify user
 				if (!oResult.ondemand && mresult.restricted && usage && hook != null && hook.shouldNotify()) {
 					notifyRestricted(restriction);
@@ -675,11 +908,10 @@ public class PrivacyService extends IPrivacyService.Stub {
 		}
 
 		long ms = System.currentTimeMillis() - start;
-		Util.log(
-				null,
-				ms < PrivacyManager.cWarnServiceDelayMs ? Log.INFO : Log.WARN,
-				String.format("Get service %s%s %d ms", restriction, (ccached ? " (ccached)" : "")
-						+ (mcached ? " (mcached)" : ""), ms));
+
+		Util.log(Log.WARN,
+				String.format("Get service restriction %s%s | mresult %s %d ms", restriction, (ccached ? " (ccached)" : "")
+						+ (mcached ? " (mcached)" : ""), mresult, ms));
 
 		if (mresult.debug)
 			Util.logStack(null, Log.WARN);
@@ -695,6 +927,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 	private void storeUsageData(final PRestriction restriction, String secret, final PRestriction mresult)
 			throws RemoteException {
 		// Check if enabled
+		Util.log(Log.WARN, "inside XPrivacy.storeUsageData");
 		final int userId = Util.getUserId(restriction.uid);
 		if (getSettingBool(userId, PrivacyManager.cSettingUsage, true)
 				&& !getSettingBool(restriction.uid, PrivacyManager.cSettingNoUsageData, false)) {
@@ -735,7 +968,10 @@ public class PrivacyService extends IPrivacyService.Stub {
 										values.put("uid", restriction.uid);
 										values.put("restriction", restriction.restrictionName);
 										values.put("method", restriction.methodName);
-										values.put("restricted", mresult.restricted);
+									//	if (mresult.fakeData)
+									//		values.put("restricted", 2);
+									//	else
+											values.put("restricted", mresult.restricted);
 										values.put("time", new Date().getTime());
 										values.put("extra", extra);
 										if (restriction.value == null)
@@ -777,6 +1013,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 					query = getRestriction(restriction, false, null);
 					restriction.restricted = query.restricted;
 					restriction.asked = query.asked;
+					restriction.fakeData = query.fakeData;
 					result.add(restriction);
 				}
 			else
@@ -1070,7 +1307,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 			SQLiteDatabase db = getDb();
 			if (db == null)
 				return;
-
+			Util.log(Log.WARN, "Inside PrivacyService.setSettingInternal setting=" + setting.toString());
 			mLock.writeLock().lock();
 			try {
 				db.beginTransaction();
@@ -1086,6 +1323,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 						values.put("name", setting.name);
 						values.put("value", setting.value);
 
+						Util.log(Log.WARN, "Inside PrivacyService.setSettingInternal ContentValues=" + values.toString());
 						// Insert/update record
 						db.insertWithOnConflict(cTableSetting, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 					}
@@ -1260,7 +1498,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 
 		long ms = System.currentTimeMillis() - start;
 		Util.log(null, ms < PrivacyManager.cWarnServiceDelayMs ? Log.INFO : Log.WARN,
-				String.format("Get service %s %d ms", setting, ms));
+				String.format("Get service setting %s %d ms", setting, ms));
 
 		return result;
 	}
@@ -1548,6 +1786,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 								Util.log(null, Log.WARN, "Already asked " + restriction);
 								result.restricted = mrestriction.restricted;
 								result.asked = true;
+								result.fakeData = mrestriction.fakeData;
 								return oResult;
 							}
 						}
@@ -1563,6 +1802,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 								Util.log(null, Log.WARN, "Already asked once category " + restriction);
 								result.restricted = carestriction.restricted;
 								result.asked = true;
+								result.fakeData = carestriction.fakeData;
 								return oResult;
 							}
 						}
@@ -1576,6 +1816,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 								Util.log(null, Log.WARN, "Already asked once method " + restriction);
 								result.restricted = marestriction.restricted;
 								result.asked = true;
+								result.fakeData = marestriction.fakeData;
 								return oResult;
 							}
 						}
@@ -1682,6 +1923,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 											holder.dialog.findViewById(R.id.btnAllow).setEnabled(true);
 											holder.dialog.findViewById(R.id.btnDontKnow).setEnabled(true);
 											holder.dialog.findViewById(R.id.btnDeny).setEnabled(true);
+											holder.dialog.findViewById(R.id.btnFakeData).setEnabled(true);
 										}
 									}
 								}, repeat ? 0 : 1000);
@@ -1900,6 +2142,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 		Button btnDeny = (Button) view.findViewById(R.id.btnDeny);
 		Button btnDontKnow = (Button) view.findViewById(R.id.btnDontKnow);
 		Button btnAllow = (Button) view.findViewById(R.id.btnAllow);
+		Button btnFakeData = (Button) view.findViewById(R.id.btnFakeData);
 
 		final int userId = Util.getUserId(Process.myUid());
 		boolean expert = getSettingBool(userId, PrivacyManager.cSettingODExpert, false);
@@ -1928,7 +2171,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 		else
 			tvParameters.setText(restriction.extra);
 		String defaultAction = resources.getString(result.restricted ? R.string.title_deny : R.string.title_allow);
-		tvDefault.setText(defaultAction + "|" + restriction.methodName);
+		tvDefault.setText(defaultAction);// + "|" + restriction.methodName);
 
 		// Help
 		int helpId = resources.getIdentifier("restrict_help_" + restriction.restrictionName, "string", self);
@@ -2081,6 +2324,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 				// Allow
 				result.restricted = false;
 				result.asked = true;
+				result.fakeData = false;
 
 				if (cbWhitelist.isChecked())
 					onDemandWhitelist(restriction, null, result, oResult, hook);
@@ -2109,6 +2353,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 				// Deny once
 				result.restricted = !(hook != null && hook.isDangerous());
 				result.asked = true;
+				result.fakeData = false;
 				onDemandOnce(restriction, false, result, oResult, spOnce);
 				holder.latch.countDown();
 			}
@@ -2120,6 +2365,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 				// Deny
 				result.restricted = true;
 				result.asked = true;
+				result.fakeData = false;
 
 				if (cbWhitelist.isChecked())
 					onDemandWhitelist(restriction, null, result, oResult, hook);
@@ -2137,6 +2383,72 @@ public class PrivacyService extends IPrivacyService.Stub {
 						onDemandOnce(restriction, cbCategory.isChecked(), result, oResult, spOnce);
 					else
 						onDemandChoice(restriction, cbCategory.isChecked(), true);
+				}
+				holder.latch.countDown();
+			}
+		});
+
+		btnFakeData.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				// Deny
+				result.restricted = false;
+				result.asked = true;
+				result.fakeData = true;
+				restriction.fakeData = true;
+
+				String value = (String) spOnce.getSelectedItem();
+				if (value == null)
+					result.time = new Date().getTime() + PrivacyManager.cRestrictionCacheTimeoutMs;
+				else {
+					char unit = value.charAt(value.length() - 1);
+					value = value.substring(0, value.length() - 1);
+					if (unit == 's')
+						result.time = new Date().getTime() + Integer.parseInt(value) * 1000;
+					else if (unit == 'm')
+						result.time = new Date().getTime() + Integer.parseInt(value) * 60 * 1000;
+					else
+						result.time = new Date().getTime() + PrivacyManager.cRestrictionCacheTimeoutMs;
+				}
+				CRestriction fakeDataKey = new CRestriction(result, null);
+				fakeDataKey.setExpiry(result.time);
+				Util.log(Log.WARN, "PrivacyService.onDemandView - result=" + result + " ,crestriction=" + fakeDataKey);
+				PrivacyManager.updateFakeDataCache(fakeDataKey);
+				try {
+					setFakeDataInternal(result);
+				} catch (Throwable ex) {
+					Util.bug(null, ex);
+				}
+
+				if (cbWhitelist.isChecked()) {
+					Util.log(Log.WARN, "Inside PrivacyService.setOnClickListener cbWhitelist");
+					onDemandWhitelist(restriction, null, result, oResult, hook);
+				}
+				else if (cbWhitelistExtra1.isChecked()) {
+					Util.log(Log.WARN, "Inside PrivacyService.setOnClickListener cbWhitelistExtra1");
+					onDemandWhitelist(restriction, getXExtra(restriction, hook)[0], result, oResult, hook);
+				}
+				else if (cbWhitelistExtra2.isChecked()) {
+					Util.log(Log.WARN, "Inside PrivacyService.setOnClickListener cbWhitelistExtra2");
+					onDemandWhitelist(restriction, getXExtra(restriction, hook)[1], result, oResult, hook);
+				}
+				else if (cbWhitelistExtra3.isChecked()) {
+					Util.log(Log.WARN, "Inside PrivacyService.setOnClickListener cbWhitelistExtra3");
+					onDemandWhitelist(restriction, getXExtra(restriction, hook)[2], result, oResult, hook);
+				}
+				else {
+					Util.log(Log.WARN, "Inside PrivacyService.setOnClickListener else");
+					setSettingBool(userId, "", PrivacyManager.cSettingODCategory, cbCategory.isChecked());
+					setSettingBool(userId, "", PrivacyManager.cSettingODOnce, cbOnce.isChecked());
+
+					if (cbOnce.isChecked()) {
+						Util.log(Log.WARN, "Inside PrivacyService.setOnClickListener onDemandOnce case");
+						onDemandOnce(restriction, cbCategory.isChecked(), result, oResult, spOnce);
+					}
+					else {
+						Util.log(Log.WARN, "Inside PrivacyService.setOnClickListener onDemandChoice case");
+						onDemandChoice(restriction, cbCategory.isChecked(), false);
+					}
 				}
 				holder.latch.countDown();
 			}
@@ -2366,7 +2678,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 	private void onDemandOnce(PRestriction restriction, boolean category, PRestriction result, OnDemandResult oResult,
 			Spinner spOnce) {
 		oResult.once = true;
-
+		Util.log(null, Log.WARN, "Inside PrivacyService.onDemandOnce");
 		// Get duration
 		String value = (String) spOnce.getSelectedItem();
 		if (value == null)
@@ -2384,13 +2696,14 @@ public class PrivacyService extends IPrivacyService.Stub {
 			try {
 				int userId = Util.getUserId(restriction.uid);
 				String sel = Integer.toString(spOnce.getSelectedItemPosition());
+				Util.log(null, Log.WARN, "Inside PrivacyService.onDemandOnce, before call to setSettingInternal");
 				setSettingInternal(new PSetting(userId, "", PrivacyManager.cSettingODOnceDuration, sel));
 			} catch (Throwable ex) {
 				Util.bug(null, ex);
 			}
 		}
 
-		Util.log(null, Log.WARN, (result.restricted ? "Deny" : "Allow") + " once " + restriction + " category="
+		Util.log(null, Log.WARN, (result.restricted ? "Deny" : (result.fakeData ? "Give fake data" : "Allow")) + " once " + restriction + " category="
 				+ category + " until=" + new Date(result.time));
 
 		CRestriction key = new CRestriction(result, null);
@@ -2404,6 +2717,12 @@ public class PrivacyService extends IPrivacyService.Stub {
 				mAskedOnceCache.remove(key);
 			mAskedOnceCache.put(key, key);
 		}
+/*		synchronized (PrivacyManager.mRestrictionCache) {
+			if (PrivacyManager.mRestrictionCache.containsKey(key))
+				PrivacyManager.mRestrictionCache.remove(key);
+			PrivacyManager.mRestrictionCache.put(key, key);
+		}
+*/
 	}
 
 	private void onDemandChoice(PRestriction restriction, boolean category, boolean restrict) {
@@ -2809,9 +3128,11 @@ public class PrivacyService extends IPrivacyService.Stub {
 								db.execSQL("CREATE TABLE restriction (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, restricted INTEGER NOT NULL)");
 								db.execSQL("CREATE TABLE setting (uid INTEGER NOT NULL, name TEXT NOT NULL, value TEXT)");
 								db.execSQL("CREATE TABLE usage (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, restricted INTEGER NOT NULL, time INTEGER NOT NULL)");
+								db.execSQL("CREATE TABLE fakedata (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, time INTEGER NOT NULL)");
 								db.execSQL("CREATE UNIQUE INDEX idx_restriction ON restriction(uid, restriction, method)");
 								db.execSQL("CREATE UNIQUE INDEX idx_setting ON setting(uid, name)");
 								db.execSQL("CREATE UNIQUE INDEX idx_usage ON usage(uid, restriction, method)");
+								db.execSQL("CREATE UNIQUE INDEX idx_fakedata ON fakedata(uid, restriction, method)");
 								db.setVersion(1);
 								db.setTransactionSuccessful();
 							} finally {

@@ -104,4 +104,13 @@
         android:contentDescription="@string/title_restrict"
         android:visibility="invisible" />
 
+    <ImageView
+        android:id="@+id/imgCbFakeData"
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="3dip"
+        android:contentDescription="@string/title_fake_data"
+        android:visibility="invisible" />
+
 </LinearLayout>

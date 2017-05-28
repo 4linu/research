@@ -10,6 +10,7 @@ public class PRestriction implements Parcelable {
 	public String methodName;
 	public boolean restricted;
 	public boolean asked;
+	public boolean fakeData;
 	public String extra;
 	public String value;
 	public long time;
@@ -26,6 +27,7 @@ public class PRestriction implements Parcelable {
 		methodName = other.methodName;
 		restricted = other.restricted;
 		asked = other.asked;
+		fakeData = other.fakeData;
 		extra = null;
 		value = other.value;
 		time = other.time;
@@ -38,6 +40,7 @@ public class PRestriction implements Parcelable {
 		methodName = method;
 		restricted = false;
 		asked = false;
+		fakeData = false;
 		extra = null;
 		value = null;
 		time = 0;
@@ -50,6 +53,7 @@ public class PRestriction implements Parcelable {
 		methodName = method;
 		restricted = _restricted;
 		asked = false;
+		fakeData = false;
 		extra = null;
 		value = null;
 		time = 0;
@@ -62,6 +66,20 @@ public class PRestriction implements Parcelable {
 		methodName = method;
 		restricted = _restricted;
 		asked = _asked;
+		fakeData = false;
+		extra = null;
+		value = null;
+		time = 0;
+		debug = false;
+	}
+
+	public PRestriction(int _uid, String category, String method, boolean _restricted, boolean _asked, boolean _fakeData) {
+		uid = _uid;
+		restrictionName = category;
+		methodName = method;
+		restricted = _restricted;
+		asked = _asked;
+		fakeData = _fakeData;
 		extra = null;
 		value = null;
 		time = 0;
@@ -96,6 +114,7 @@ public class PRestriction implements Parcelable {
 
 		out.writeInt(restricted ? 1 : 0);
 		out.writeInt(asked ? 1 : 0);
+		out.writeInt(fakeData ? 1 : 0);
 
 		out.writeInt(extra == null ? 1 : 0);
 		if (extra != null)
@@ -115,6 +134,7 @@ public class PRestriction implements Parcelable {
 		methodName = (in.readInt() > 0 ? null : in.readString());
 		restricted = (in.readInt() > 0 ? true : false);
 		asked = (in.readInt() > 0 ? true : false);
+		fakeData = (in.readInt() > 0 ? true : false);
 		extra = (in.readInt() > 0 ? null : in.readString());
 		value = (in.readInt() > 0 ? null : in.readString());
 		time = in.readLong();
@@ -130,6 +150,6 @@ public class PRestriction implements Parcelable {
 	@SuppressLint("DefaultLocale")
 	public String toString() {
 		return String.format("%d/%s(%s;%s) %s=%srestricted%s", uid, methodName, extra, value, restrictionName,
-				(restricted ? "" : "!"), (asked ? "" : "?"));
+				(restricted ? "" : "!"), (asked ? "" : "?")) + " fakeData=" + fakeData;
 	}
 }

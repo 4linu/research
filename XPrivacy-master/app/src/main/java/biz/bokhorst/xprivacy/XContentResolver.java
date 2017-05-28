@@ -2,6 +2,8 @@ package biz.bokhorst.xprivacy;
 
 import java.io.FileNotFoundException;
 import java.net.InetAddress;
+import java.security.SecureRandom;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +17,7 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -243,6 +246,10 @@ public class XContentResolver extends XHook {
 
 	@Override
 	protected void after(XParam param) throws Throwable {
+		Util.log(this, Log.WARN, "$$$$$$$$ after method -  XContentResolver");
+
+		Util.log(this, Log.WARN, "mMethod=" + mMethod + "|param.method=" + param.method.getName() + "|param.toString=" + param.toString());
+
 		switch (mMethod) {
 		case getCurrentSync:
 			if (isRestricted(param))
@@ -266,13 +273,13 @@ public class XContentResolver extends XHook {
 		case openTypedAssetFileDescriptor:
 		case openAssetFile:
 		case openFile:
-			Util.log(this, Log.WARN, "$$$Niuie#######################Niuie XCONTENTRESOLVER");
+			Util.log(this, Log.WARN, "after method, XContentResolver, case openFile");
 			if (param != null)
 			{
-				Util.log(this, Log.WARN, "Niuie cu param " + param.method.getName());
+				Util.log(this, Log.WARN, "param.method=" + param.method.getName());
 			}
 			if (param.args.length > 0 && param.args[0] instanceof Uri) {
-				String uri = ((Uri) param.args[0]).toString();
+				String uri = param.args[0].toString();
 				if (isRestrictedExtra(param, uri))
 					param.setThrowable(new FileNotFoundException("XPrivacy"));
 			}
@@ -284,6 +291,7 @@ public class XContentResolver extends XHook {
 
 		case query:
 		case Srv_query:
+			Util.log(this, Log.WARN, "after method, XContentResolver, Srv_query/query case");
 			handleUriAfter(param);
 			break;
 
@@ -308,7 +316,7 @@ public class XContentResolver extends XHook {
 	private void handleUriBefore(XParam param) throws Throwable {
 		// Check URI
 		if (param.args.length > 1 && param.args[0] instanceof Uri) {
-			String uri = ((Uri) param.args[0]).toString().toLowerCase();
+			String uri = param.args[0].toString().toLowerCase();
 			String[] projection = (param.args[1] instanceof String[] ? (String[]) param.args[1] : null);
 
 			if (uri.startsWith("content://com.android.contacts/contacts/name_phone_or_email")) {
@@ -342,6 +350,7 @@ public class XContentResolver extends XHook {
 						if (added)
 							param.setObjectExtra("column_added", added);
 					}
+				Util.log(this, Log.WARN, "Inside XContentResolver,handleUriBefore, after call to isRestrictedExtra");
 			}
 		}
 	}
@@ -402,12 +411,34 @@ public class XContentResolver extends XHook {
 
 			} else if (uri.startsWith("content://com.android.contacts/")
 					&& !uri.equals("content://com.android.contacts/")) {
+				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.android.contacts/");
 				// Contacts provider: allow selected contacts
 				String[] components = uri.replace("content://com.android.", "").split("/");
 				String methodName = components[0] + "/" + components[1].split("\\?")[0];
 				if (methodName.equals("contacts/contacts") || methodName.equals("contacts/data")
 						|| methodName.equals("contacts/phone_lookup") || methodName.equals("contacts/raw_contacts")) {
-					if (isRestrictedExtra(param, PrivacyManager.cContacts, methodName, uri)) {
+					int uid = Binder.getCallingUid();
+
+					if (isFakeDataExtra(param, PrivacyManager.cContacts, methodName, uri)) {
+						Util.log(this, Log.WARN, "uid=" + uid + " inside XContentResolver on isFakeDataExtra branch");
+						//if (uid == 10145) {
+						MatrixCursor result = new MatrixCursor(cursor.getColumnNames());
+						//Util.log(this, Log.WARN, "cursor columns " + cursor.getColumnNames().toString());
+						//Util.log(this, Log.WARN, "cursor.getColumnCount " + cursor.getColumnCount());
+						if (cursor.moveToFirst()) {
+							do {
+								//Util.log(this, Log.WARN, "cursor.Name " + cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+								//Util.log(this, Log.WARN, "cursor.Name " + cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+
+								fillColumnsWithFakeData(cursor, result, cursor.getColumnCount());
+							} while (cursor.moveToNext());
+						}
+						param.setResult(result);
+						cursor.close();
+						//}
+					}
+					else if (isRestrictedExtra(param, PrivacyManager.cContacts, methodName, uri)) {
+						Util.log(this, Log.WARN, "uid=" + uid + " inside XContentResolver on isRestrictedExtra branch");
 						// Get ID from URL if any
 						int urlid = -1;
 						if ((methodName.equals("contacts/contacts") || methodName.equals("contacts/phone_lookup"))
@@ -424,7 +455,7 @@ public class XContentResolver extends XHook {
 							listColumn.remove(listColumn.size() - 1);
 
 						// Get blacklist setting
-						int uid = Binder.getCallingUid();
+
 						boolean blacklist = PrivacyManager
 								.getSettingBool(-uid, PrivacyManager.cSettingBlacklist, false);
 
@@ -656,6 +687,43 @@ public class XContentResolver extends XHook {
 					break;
 				default:
 					Util.log(this, Log.WARN, "Unknown cursor data type=" + cursor.getType(i));
+				}
+			result.addRow(columns);
+		} catch (Throwable ex) {
+			Util.bug(this, ex);
+		}
+	}
+
+	private void fillColumnsWithFakeData(Cursor cursor, MatrixCursor result, int count) {
+		try {
+			SecureRandom random = new SecureRandom();
+			Object[] columns = new Object[count];
+			for (int i = 0; i < count; i++)
+				switch (cursor.getType(i)) {
+					case Cursor.FIELD_TYPE_NULL:
+						columns[i] = null;
+						break;
+					case Cursor.FIELD_TYPE_INTEGER:
+						random.setSeed(cursor.getInt(i));
+						columns[i] = random.nextInt();//cursor.getInt(i);
+						break;
+					case Cursor.FIELD_TYPE_FLOAT:
+						columns[i] = random.nextFloat();//cursor.getFloat(i);
+						break;
+					case Cursor.FIELD_TYPE_STRING:
+						byte [] b = new byte[cursor.getString(i).length()];
+						random.nextBytes(b);//cursor.getString(i);
+						columns[i] = new String(b);
+						break;
+					case Cursor.FIELD_TYPE_BLOB:
+						byte [] bl = new byte[cursor.getBlob(i).length];
+						random.nextBytes(bl);
+						columns[i] = bl;
+
+
+						break;
+					default:
+						Util.log(this, Log.WARN, "Unknown cursor data type=" + cursor.getType(i));
 				}
 			result.addRow(columns);
 		} catch (Throwable ex) {

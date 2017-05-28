@@ -68,7 +68,7 @@ public class XIoBridge extends XHook {
 	@Override
 	@SuppressLint("SdCardPath")
 	protected void before(XParam param) throws Throwable {
-		Util.log(this, Log.DEBUG, "Inside Before of XIOBridge");
+		//Util.log(this, Log.DEBUG, "Inside Before of XIOBridge");
 		if (mMethod == Methods.connect) {
 			if (param.args.length > 2 && param.args[1] instanceof InetAddress && param.args[2] instanceof Integer) {
 				InetAddress address = (InetAddress) param.args[1];
@@ -105,7 +105,7 @@ public class XIoBridge extends XHook {
 						if (TextUtils.isEmpty(mMediaStorage))
 							mMediaStorage = "/data/media";
 					}
-					Util.log(this, Log.WARN, "RADIO GAGA filename = " + fileName);
+			//		Util.log(this, Log.WARN, "XIoBridge before method, var filename = " + fileName);
 					// Check storage folders
 					if (fileName.startsWith("/sdcard")
 							|| (mExternalStorage != null && fileName.startsWith(mExternalStorage))
@@ -149,14 +149,15 @@ public class XIoBridge extends XHook {
 
 		if (param != null)
 		{
-			Util.log(this, Log.WARN, "BE VALI " + param.method.getName() + " | " + param.toString() );
+			//Util.log(this, Log.WARN, "XIoBridge before method " + param.method.getName() + " | " + param.toString() );
 		}
-		Util.log(this, Log.WARN, "Debugging param: no answer");
-		Util.log(this, Log.INFO, "Debugging param: no answer");
+		else {
+			//Util.log(this, Log.WARN, "Debugging param: null");
+		}
 
 		if (param.hasThrowable()) {
 			Throwable thr = param.getThrowable();
-			Util.log(this, Log.ERROR, "BAHGARestrictie = " + thr.getMessage());
+			//Util.log(this, Log.ERROR, "BAHGARestrictie = " + thr.getMessage());
 			PrivacyService ps = PrivacyService.getPrivacyService();
 			ps.onDemandWindow();
 		}
