@@ -21,6 +21,7 @@ import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
@@ -73,6 +74,10 @@ public class Util {
 	public static int NOTIFY_UPDATE = 6;
 	public static int NOTIFY_CORRUPT = 7;
 
+	private static char[] alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIFKLMNOPQRSTUVWXYZ".toCharArray();
+	public static char [] alphaNumeric = "abcdefghijklmnopqrstuvwxyzABCDEFGHIFKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+	private static SecureRandom random = new SecureRandom();
+
 	public static void log(XHook hook, int priority, String msg) {
 		// Check if logging enabled
 		int uid = Process.myUid();
@@ -108,6 +113,46 @@ public class Util {
 	public static void log(int priority, String msg) {
 
 		Log.println(priority, "MyXPrivacy", msg);
+	}
+	/* returns an int in the range [0,9] */
+	public static int getRandomDigit()
+	{
+		return random.nextInt(10);
+	}
+	/* returns an int in the range [1,9] */
+	public static int getRandomNonZeroDigit()
+	{
+		return 1 + random.nextInt(9);
+	}
+
+	public static String generateFakePhoneNumber() {
+
+		StringBuffer ret = new StringBuffer("+");
+		ret.append(getRandomNonZeroDigit());
+		ret.append(0);
+		ret.append(getRandomNonZeroDigit());
+
+		for (int i = 0; i < 8; ++i)
+			ret.append(getRandomNonZeroDigit());
+
+		return ret.toString();
+	}
+	/* returns a string of size n with chars in range of [a-zA-Z] */
+	public static String generateRandomAlpha(int n) {
+		StringBuffer ret = new StringBuffer("");
+		for (int i = 0; i < n; ++i)
+			ret.append(alpha[random.nextInt(alpha.length)]);
+
+		return ret.toString();
+	}
+
+	/* returns a string of size n with chars in range of [a-zA-Z0-9] */
+	public static String generateRandomAlphaNumeric(int n) {
+		StringBuffer ret = new StringBuffer("");
+		for (int i = 0; i < n; ++i)
+			ret.append(alphaNumeric[random.nextInt(alphaNumeric.length)]);
+
+		return ret.toString();
 	}
 
 	public static void bug(XHook hook, Throwable ex) {

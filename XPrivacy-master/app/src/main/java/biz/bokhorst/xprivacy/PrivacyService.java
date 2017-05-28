@@ -363,6 +363,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 
 	private void setFakeDataInternal(PRestriction restriction) throws RemoteException
 	{
+		Util.log(Log.WARN, "Inside PrivacyService.setFakeDataInternal");
 		try {
 			SQLiteDatabase db = getDb();
 			if (db == null)
@@ -376,7 +377,8 @@ public class PrivacyService extends IPrivacyService.Stub {
 			try {
 				db.beginTransaction();
 				try {
-					//db.execSQL("CREATE TABLE if not exists fakedata (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, time INTEGER NOT NULL)");
+					//db.execSQL("DROP TABLE fakedata");
+					//db.execSQL("CREATE TABLE fakedata (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, time INTEGER NOT NULL)");
 					// Create method exception record
 					//db.execSQL("CREATE UNIQUE INDEX idx_fakedata ON fakedata(uid, restriction, method)");
 					if (restriction.methodName != null) {
@@ -385,7 +387,13 @@ public class PrivacyService extends IPrivacyService.Stub {
 						mvalues.put("restriction", restriction.restrictionName);
 						mvalues.put("method", restriction.methodName);
 						mvalues.put("time", restriction.time);
-						db.insertWithOnConflict(cTableFakeData, null, mvalues, SQLiteDatabase.CONFLICT_REPLACE);
+						long status = db.insertWithOnConflict(cTableFakeData, null, mvalues, SQLiteDatabase.CONFLICT_REPLACE);
+						if (status > 0) {
+							Util.log(Log.WARN, "Inside PrivacyService.setFakeDataInternal successful, status=" + status);
+						}
+						else {
+							Util.log(Log.WARN, "Inside PrivacyService.setFakeDataInternal was unsuccessful");
+						}
 					}
 
 					db.setTransactionSuccessful();
@@ -527,11 +535,21 @@ public class PrivacyService extends IPrivacyService.Stub {
 									long time = stmtGetRestriction.simpleQueryForLong();
 
 									mresult.time = time;
-
-									mresult.fakeData = true;
+									if (time < new Date().getTime()) {
+										//expired
+										Util.log(Log.WARN, "Inside PrivacyService.getFakeData - restriction fake data expired");
+												db.delete(cTableFakeData, "uid=? AND restriction=? and method=?", new String[]{Integer.toString(restriction.uid),
+														restriction.restrictionName, restriction.methodName});
+									}
+									else {
+										Util.log(Log.WARN, "Inside PrivacyService.getFakeData - restriction fake data active");
+										mresult.fakeData = true;
+									}
 									Util.log(Log.WARN, "Inside PrivacyService.getFakeData - synchronized statement, time=" + (time - new Date().getTime()) + ", mresult=" + mresult);
 								}
 							} catch (SQLiteDoneException ignored) {
+								//reaches here when query returns no result
+								Util.log(Log.WARN, "Inside PrivacyService.getRestriction - SQLite query returns zero rows");
 							}
 						} else {
 							Util.log(Log.WARN, "Inside PrivacyService.getFakeData - restriction.methodName = null");
@@ -787,6 +805,8 @@ public class PrivacyService extends IPrivacyService.Stub {
 										mresult.asked = cresult.asked;
 									}
 								} catch (SQLiteDoneException ignored) {
+									//reaches here if no restriction is found
+									Util.log(Log.WARN, "Inside PrivacyService.getRestriction - SQLite query returns zero rows");
 								}
 
 							if (restriction.methodName != null)
@@ -2413,11 +2433,11 @@ public class PrivacyService extends IPrivacyService.Stub {
 				CRestriction fakeDataKey = new CRestriction(result, null);
 				fakeDataKey.setExpiry(result.time);
 				Util.log(Log.WARN, "PrivacyService.onDemandView - result=" + result + " ,crestriction=" + fakeDataKey);
-				PrivacyManager.updateFakeDataCache(fakeDataKey);
+				//PrivacyManager.updateFakeDataCache(fakeDataKey);
 				try {
 					setFakeDataInternal(result);
 				} catch (Throwable ex) {
-					Util.bug(null, ex);
+					Util.log(Log.WARN, "PrivacyService.setFakeDataInternal throws exceptoion: " + ex.getMessage());
 				}
 
 				if (cbWhitelist.isChecked()) {

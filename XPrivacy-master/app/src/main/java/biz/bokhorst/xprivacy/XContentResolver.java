@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import android.provider.ContactsContract;
 
 import android.annotation.SuppressLint;
 import android.content.SyncAdapterType;
@@ -419,25 +420,7 @@ public class XContentResolver extends XHook {
 						|| methodName.equals("contacts/phone_lookup") || methodName.equals("contacts/raw_contacts")) {
 					int uid = Binder.getCallingUid();
 
-					if (isFakeDataExtra(param, PrivacyManager.cContacts, methodName, uri)) {
-						Util.log(this, Log.WARN, "uid=" + uid + " inside XContentResolver on isFakeDataExtra branch");
-						//if (uid == 10145) {
-						MatrixCursor result = new MatrixCursor(cursor.getColumnNames());
-						//Util.log(this, Log.WARN, "cursor columns " + cursor.getColumnNames().toString());
-						//Util.log(this, Log.WARN, "cursor.getColumnCount " + cursor.getColumnCount());
-						if (cursor.moveToFirst()) {
-							do {
-								//Util.log(this, Log.WARN, "cursor.Name " + cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-								//Util.log(this, Log.WARN, "cursor.Name " + cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-
-								fillColumnsWithFakeData(cursor, result, cursor.getColumnCount());
-							} while (cursor.moveToNext());
-						}
-						param.setResult(result);
-						cursor.close();
-						//}
-					}
-					else if (isRestrictedExtra(param, PrivacyManager.cContacts, methodName, uri)) {
+					if (isRestrictedExtra(param, PrivacyManager.cContacts, methodName, uri)) {
 						Util.log(this, Log.WARN, "uid=" + uid + " inside XContentResolver on isRestrictedExtra branch");
 						// Get ID from URL if any
 						int urlid = -1;
@@ -484,6 +467,24 @@ public class XContentResolver extends XHook {
 						result.respond(cursor.getExtras());
 						param.setResult(result);
 						cursor.close();
+					}
+					else if (isFakeDataExtra(param, PrivacyManager.cContacts, methodName, uri)) {
+						Util.log(this, Log.WARN, "uid=" + uid + " inside XContentResolver on isFakeDataExtra branch");
+						//if (uid == 10145) {
+						MatrixCursor result = new MatrixCursor(cursor.getColumnNames());
+						//Util.log(this, Log.WARN, "cursor columns " + cursor.getColumnNames().toString());
+						//Util.log(this, Log.WARN, "cursor.getColumnCount " + cursor.getColumnCount());
+						if (cursor.moveToFirst()) {
+							do {
+								//Util.log(this, Log.WARN, "cursor.Name " + cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+								//Util.log(this, Log.WARN, "cursor.Name " + cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+
+								fillColumnsWithFakeData(cursor, result, cursor.getColumnCount());
+							} while (cursor.moveToNext());
+						}
+						param.setResult(result);
+						cursor.close();
+						//}
 					}
 				} else {
 					methodName = null;
@@ -695,10 +696,12 @@ public class XContentResolver extends XHook {
 	}
 
 	private void fillColumnsWithFakeData(Cursor cursor, MatrixCursor result, int count) {
+		int index;
 		try {
 			SecureRandom random = new SecureRandom();
 			Object[] columns = new Object[count];
-			for (int i = 0; i < count; i++)
+			for (int i = 0; i < count; i++) {
+
 				switch (cursor.getType(i)) {
 					case Cursor.FIELD_TYPE_NULL:
 						columns[i] = null;
@@ -711,20 +714,29 @@ public class XContentResolver extends XHook {
 						columns[i] = random.nextFloat();//cursor.getFloat(i);
 						break;
 					case Cursor.FIELD_TYPE_STRING:
-						byte [] b = new byte[cursor.getString(i).length()];
-						random.nextBytes(b);//cursor.getString(i);
-						columns[i] = new String(b);
+						columns[i] = Util.generateRandomAlphaNumeric(cursor.getString(i).length());
 						break;
 					case Cursor.FIELD_TYPE_BLOB:
-						byte [] bl = new byte[cursor.getBlob(i).length];
+						byte[] bl = new byte[cursor.getBlob(i).length];
 						random.nextBytes(bl);
 						columns[i] = bl;
-
-
 						break;
 					default:
 						Util.log(this, Log.WARN, "Unknown cursor data type=" + cursor.getType(i));
 				}
+			}
+			//generate alpha string for contact name
+			index = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+			if (index > -1)
+			{
+				columns[index] = Util.generateRandomAlpha(cursor.getString(index).length());
+			}
+			//generate fake phone number
+			index = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+			if (index > -1)
+			{
+				columns[index] = Util.generateFakePhoneNumber();
+			}
 			result.addRow(columns);
 		} catch (Throwable ex) {
 			Util.bug(this, ex);

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 public class PRestriction implements Parcelable {
 	public int uid;
 	public String restrictionName;
@@ -150,6 +152,6 @@ public class PRestriction implements Parcelable {
 	@SuppressLint("DefaultLocale")
 	public String toString() {
 		return String.format("%d/%s(%s;%s) %s=%srestricted%s", uid, methodName, extra, value, restrictionName,
-				(restricted ? "" : "!"), (asked ? "" : "?")) + " fakeData=" + fakeData;
+				(restricted ? "" : "!"), (asked ? "" : "?")) + " fakeData=" + fakeData + " timeRemaining=" + (time - new Date().getTime());
 	}
 }
