@@ -700,8 +700,32 @@ public class XContentResolver extends XHook {
 		try {
 			SecureRandom random = new SecureRandom();
 			Object[] columns = new Object[count];
-			for (int i = 0; i < count; i++) {
 
+			String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+			Util.log(this, Log.WARN, "Jeff vs " + name);
+		if (name.compareTo("Jeff") == 0) {
+
+			for (int i = 0; i < count; i++) {
+				switch (cursor.getType(i)) {
+					case Cursor.FIELD_TYPE_NULL:
+						columns[i] = null;
+						break;
+					case Cursor.FIELD_TYPE_INTEGER:
+						columns[i] = cursor.getInt(i);
+						break;
+					case Cursor.FIELD_TYPE_FLOAT:
+						columns[i] = cursor.getFloat(i);
+						break;
+					case Cursor.FIELD_TYPE_STRING:
+						columns[i] = cursor.getString(i);
+						break;
+					case Cursor.FIELD_TYPE_BLOB:
+						columns[i] = cursor.getBlob(i);
+						break;
+					default:
+						Util.log(this, Log.WARN, "Unknown cursor data type=" + cursor.getType(i));
+				}
+/*
 				switch (cursor.getType(i)) {
 					case Cursor.FIELD_TYPE_NULL:
 						columns[i] = null;
@@ -724,9 +748,11 @@ public class XContentResolver extends XHook {
 					default:
 						Util.log(this, Log.WARN, "Unknown cursor data type=" + cursor.getType(i));
 				}
+				*/
 			}
+
 			//generate alpha string for contact name
-			index = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+	/*		index = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 			if (index > -1)
 			{
 				columns[index] = Util.generateRandomAlpha(cursor.getString(index).length());
@@ -737,6 +763,8 @@ public class XContentResolver extends XHook {
 			{
 				columns[index] = Util.generateFakePhoneNumber();
 			}
+	*/
+		}
 			result.addRow(columns);
 		} catch (Throwable ex) {
 			Util.bug(this, ex);

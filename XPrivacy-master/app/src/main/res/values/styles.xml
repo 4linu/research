@@ -25,7 +25,8 @@
         <item name="color_state_attention">@color/color_state_attention_dark</item>
         <item name="color_state_restricted">@color/color_state_restricted_dark</item>
         <item name="color_state_shared">@color/color_state_shared_dark</item>
-        <item name="progress_horizontal" format="reference">@drawable/progress_horizontal_dark</item>
+        <item name="progress_horizontal" format="reference">@drawable/progress_horizontal_dark
+        </item>
         <item name="background_tutorial">@drawable/tutorial_background_dark</item>
         <item name="cardStyle">@style/CardView.Dark</item>
         <item name="list_item_pressed">@drawable/list_item_pressed_dark</item>
@@ -55,7 +56,8 @@
         <item name="color_state_attention">@color/color_state_attention_light</item>
         <item name="color_state_restricted">@color/color_state_restricted_light</item>
         <item name="color_state_shared">@color/color_state_shared_light</item>
-        <item name="progress_horizontal" format="reference">@drawable/progress_horizontal_light</item>
+        <item name="progress_horizontal" format="reference">@drawable/progress_horizontal_light
+        </item>
         <item name="background_tutorial">@drawable/tutorial_background_light</item>
         <item name="cardStyle">@style/CardView.Light</item>
         <item name="list_item_pressed">@drawable/list_item_pressed_light</item>
@@ -67,5 +69,9 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:minHeight">48dp</item>
     </style>
+
+    <style name="CustomTheme.Light.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="CustomTheme.Light.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

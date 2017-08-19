@@ -39,6 +39,7 @@ import android.os.Process;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.Settings;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.SwitchCompat;
@@ -69,6 +70,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 public class ActivityApp extends ActivityBase {
 	private ApplicationInfoEx mAppInfo = null;
 	private SwitchCompat swEnabled = null;
@@ -89,6 +94,51 @@ public class ActivityApp extends ActivityBase {
 
 	private static ExecutorService mExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
 			new PriorityThreadFactory());
+	/**
+	 * ATTENTION: This was auto-generated to implement the App Indexing API.
+	 * See https://g.co/AppIndexing/AndroidStudio for more information.
+	 */
+	private GoogleApiClient client;
+
+	@Override
+	public void onStart() {
+		super.onStart();
+
+		// ATTENTION: This was auto-generated to implement the App Indexing API.
+		// See https://g.co/AppIndexing/AndroidStudio for more information.
+		client.connect();
+		Action viewAction = Action.newAction(
+				Action.TYPE_VIEW, // TODO: choose an action type.
+				"ActivityApp Page", // TODO: Define a title for the content shown.
+				// TODO: If you have web page content that matches this app activity's content,
+				// make sure this auto-generated web page URL is correct.
+				// Otherwise, set the URL to null.
+				Uri.parse("http://host/path"),
+				// TODO: Make sure this auto-generated app deep link URI is correct.
+				Uri.parse("android-app://biz.bokhorst.xprivacy/http/host/path")
+		);
+		AppIndex.AppIndexApi.start(client, viewAction);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+
+		// ATTENTION: This was auto-generated to implement the App Indexing API.
+		// See https://g.co/AppIndexing/AndroidStudio for more information.
+		Action viewAction = Action.newAction(
+				Action.TYPE_VIEW, // TODO: choose an action type.
+				"ActivityApp Page", // TODO: Define a title for the content shown.
+				// TODO: If you have web page content that matches this app activity's content,
+				// make sure this auto-generated web page URL is correct.
+				// Otherwise, set the URL to null.
+				Uri.parse("http://host/path"),
+				// TODO: Make sure this auto-generated app deep link URI is correct.
+				Uri.parse("android-app://biz.bokhorst.xprivacy/http/host/path")
+		);
+		AppIndex.AppIndexApi.end(client, viewAction);
+		client.disconnect();
+	}
 
 	private static class PriorityThreadFactory implements ThreadFactory {
 		@Override
@@ -334,6 +384,9 @@ public class ActivityApp extends ActivityBase {
 			else if (extras.getInt(cAction) == cActionSettings)
 				optionSettings();
 		}
+		// ATTENTION: This was auto-generated to implement the App Indexing API.
+		// See https://g.co/AppIndexing/AndroidStudio for more information.
+		client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 	}
 
 	@Override
@@ -409,8 +462,8 @@ public class ActivityApp extends ActivityBase {
 						where += " AND " + ContactsContract.Groups.SUMMARY_COUNT + " > 0";
 						Cursor cursor = getContentResolver().query(
 								ContactsContract.Groups.CONTENT_SUMMARY_URI,
-								new String[] { ContactsContract.Groups._ID, ContactsContract.Groups.TITLE,
-										ContactsContract.Groups.ACCOUNT_NAME, ContactsContract.Groups.SUMMARY_COUNT },
+								new String[]{ContactsContract.Groups._ID, ContactsContract.Groups.TITLE,
+										ContactsContract.Groups.ACCOUNT_NAME, ContactsContract.Groups.SUMMARY_COUNT},
 								where, null,
 								ContactsContract.Groups.TITLE + ", " + ContactsContract.Groups.ACCOUNT_NAME);
 
@@ -483,20 +536,20 @@ public class ActivityApp extends ActivityBase {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_LAUNCH:
-			optionLaunch(item.getGroupId());
-			return true;
-		case MENU_SETTINGS:
-			optionAppSettings(item.getGroupId());
-			return true;
-		case MENU_KILL:
-			optionKill(item.getGroupId());
-			return true;
-		case MENU_STORE:
-			optionStore(item.getGroupId());
-			return true;
-		default:
-			return super.onContextItemSelected(item);
+			case MENU_LAUNCH:
+				optionLaunch(item.getGroupId());
+				return true;
+			case MENU_SETTINGS:
+				optionAppSettings(item.getGroupId());
+				return true;
+			case MENU_KILL:
+				optionKill(item.getGroupId());
+				return true;
+			case MENU_STORE:
+				optionStore(item.getGroupId());
+				return true;
+			default:
+				return super.onContextItemSelected(item);
 		}
 	}
 
@@ -506,7 +559,7 @@ public class ActivityApp extends ActivityBase {
 	}
 
 	private void optionAppSettings(int which) {
-		Intent intentSettings = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+		Intent intentSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
 				Uri.parse("package:" + mAppInfo.getPackageName().get(which)));
 		startActivity(intentSettings);
 	}
@@ -563,64 +616,64 @@ public class ActivityApp extends ActivityBase {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			Intent upIntent = NavUtils.getParentActivityIntent(this);
-			if (upIntent != null)
-				if (NavUtils.shouldUpRecreateTask(this, upIntent))
-					TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
-				else
-					NavUtils.navigateUpTo(this, upIntent);
-			return true;
-		case R.id.menu_usage:
-			optionUsage();
-			return true;
-		case R.id.menu_accounts:
-			optionAccounts();
-			return true;
-		case R.id.menu_applications:
-			optionApplications();
-			return true;
-		case R.id.menu_contacts:
-			if (item.getGroupId() != 0) {
-				optionContacts(item.getGroupId());
+			case android.R.id.home:
+				Intent upIntent = NavUtils.getParentActivityIntent(this);
+				if (upIntent != null)
+					if (NavUtils.shouldUpRecreateTask(this, upIntent))
+						TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
+					else
+						NavUtils.navigateUpTo(this, upIntent);
 				return true;
-			} else
-				return false;
-		case R.id.menu_whitelists:
-			optionWhitelists(null);
-			return true;
-		case R.id.menu_apply:
-			optionTemplate();
-			return true;
-		case R.id.menu_clear:
-			optionClear();
-			return true;
-		case R.id.menu_export:
-			optionExport();
-			return true;
-		case R.id.menu_import:
-			optionImport();
-			return true;
-		case R.id.menu_submit:
-			optionSubmit();
-			return true;
-		case R.id.menu_fetch:
-			optionFetch();
-			return true;
-		case R.id.menu_settings:
-			optionSettings();
-			return true;
-		case R.id.menu_dump:
-			optionDump();
-			return true;
-		case R.id.menu_legend:
-			optionLegend();
-			return true;
-		case R.id.menu_tutorial:
-			optionTutorial();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
+			case R.id.menu_usage:
+				optionUsage();
+				return true;
+			case R.id.menu_accounts:
+				optionAccounts();
+				return true;
+			case R.id.menu_applications:
+				optionApplications();
+				return true;
+			case R.id.menu_contacts:
+				if (item.getGroupId() != 0) {
+					optionContacts(item.getGroupId());
+					return true;
+				} else
+					return false;
+			case R.id.menu_whitelists:
+				optionWhitelists(null);
+				return true;
+			case R.id.menu_apply:
+				optionTemplate();
+				return true;
+			case R.id.menu_clear:
+				optionClear();
+				return true;
+			case R.id.menu_export:
+				optionExport();
+				return true;
+			case R.id.menu_import:
+				optionImport();
+				return true;
+			case R.id.menu_submit:
+				optionSubmit();
+				return true;
+			case R.id.menu_fetch:
+				optionFetch();
+				return true;
+			case R.id.menu_settings:
+				optionSettings();
+				return true;
+			case R.id.menu_dump:
+				optionDump();
+				return true;
+			case R.id.menu_legend:
+				optionLegend();
+				return true;
+			case R.id.menu_tutorial:
+				optionTutorial();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -668,7 +721,7 @@ public class ActivityApp extends ActivityBase {
 	private void optionTemplate() {
 		Intent intent = new Intent(ActivityShare.ACTION_TOGGLE);
 		intent.putExtra(ActivityShare.cInteractive, true);
-		intent.putExtra(ActivityShare.cUidList, new int[] { mAppInfo.getUid() });
+		intent.putExtra(ActivityShare.cUidList, new int[]{mAppInfo.getUid()});
 		intent.putExtra(ActivityShare.cChoice, ActivityShare.CHOICE_TEMPLATE);
 		startActivity(intent);
 	}
@@ -676,21 +729,21 @@ public class ActivityApp extends ActivityBase {
 	private void optionClear() {
 		Intent intent = new Intent(ActivityShare.ACTION_TOGGLE);
 		intent.putExtra(ActivityShare.cInteractive, true);
-		intent.putExtra(ActivityShare.cUidList, new int[] { mAppInfo.getUid() });
+		intent.putExtra(ActivityShare.cUidList, new int[]{mAppInfo.getUid()});
 		intent.putExtra(ActivityShare.cChoice, ActivityShare.CHOICE_CLEAR);
 		startActivity(intent);
 	}
 
 	private void optionExport() {
 		Intent intent = new Intent(ActivityShare.ACTION_EXPORT);
-		intent.putExtra(ActivityShare.cUidList, new int[] { mAppInfo.getUid() });
+		intent.putExtra(ActivityShare.cUidList, new int[]{mAppInfo.getUid()});
 		intent.putExtra(ActivityShare.cInteractive, true);
 		startActivity(intent);
 	}
 
 	private void optionImport() {
 		Intent intent = new Intent(ActivityShare.ACTION_IMPORT);
-		intent.putExtra(ActivityShare.cUidList, new int[] { mAppInfo.getUid() });
+		intent.putExtra(ActivityShare.cUidList, new int[]{mAppInfo.getUid()});
 		intent.putExtra(ActivityShare.cInteractive, true);
 		startActivity(intent);
 	}
@@ -698,7 +751,7 @@ public class ActivityApp extends ActivityBase {
 	private void optionSubmit() {
 		if (ActivityShare.registerDevice(this)) {
 			Intent intent = new Intent("biz.bokhorst.xprivacy.action.SUBMIT");
-			intent.putExtra(ActivityShare.cUidList, new int[] { mAppInfo.getUid() });
+			intent.putExtra(ActivityShare.cUidList, new int[]{mAppInfo.getUid()});
 			intent.putExtra(ActivityShare.cInteractive, true);
 			startActivity(intent);
 		}
@@ -706,7 +759,7 @@ public class ActivityApp extends ActivityBase {
 
 	private void optionFetch() {
 		Intent intent = new Intent("biz.bokhorst.xprivacy.action.FETCH");
-		intent.putExtra(ActivityShare.cUidList, new int[] { mAppInfo.getUid() });
+		intent.putExtra(ActivityShare.cUidList, new int[]{mAppInfo.getUid()});
 		intent.putExtra(ActivityShare.cInteractive, true);
 		startActivity(intent);
 	}
@@ -917,14 +970,14 @@ public class ActivityApp extends ActivityBase {
 			Cursor cursor;
 			if (params[0] < 0)
 				cursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
-						new String[] { ContactsContract.Contacts._ID, Phone.DISPLAY_NAME }, null, null,
+						new String[]{ContactsContract.Contacts._ID, Phone.DISPLAY_NAME}, null, null,
 						Phone.DISPLAY_NAME);
 			else
 				cursor = getContentResolver()
 						.query(ContactsContract.Data.CONTENT_URI,
-								new String[] { ContactsContract.Contacts._ID, Phone.DISPLAY_NAME,
-										GroupMembership.GROUP_ROW_ID }, GroupMembership.GROUP_ROW_ID + "= ?",
-								new String[] { Integer.toString(params[0]) }, Phone.DISPLAY_NAME);
+								new String[]{ContactsContract.Contacts._ID, Phone.DISPLAY_NAME,
+										GroupMembership.GROUP_ROW_ID}, GroupMembership.GROUP_ROW_ID + "= ?",
+								new String[]{Integer.toString(params[0])}, Phone.DISPLAY_NAME);
 			if (cursor != null)
 				try {
 					while (cursor.moveToNext()) {
@@ -1031,7 +1084,7 @@ public class ActivityApp extends ActivityBase {
 		private LayoutInflater mInflater;
 
 		public RestrictionAdapter(Context context, int resource, ApplicationInfoEx appInfo,
-				String selectedRestrictionName, String selectedMethodName) {
+								  String selectedRestrictionName, String selectedMethodName) {
 			mContext = context;
 			mAppInfo = appInfo;
 			mSelectedRestrictionName = selectedRestrictionName;
@@ -1081,9 +1134,10 @@ public class ActivityApp extends ActivityBase {
 			public ImageView imgCbRestricted;
 			public ProgressBar pbRunning;
 			public ImageView imgCbAsk;
+			public ImageView imgMoreOptions;
 			public LinearLayout llName;
 
-			public GroupViewHolder(View theRow, int thePosition) {
+			public GroupViewHolder(View theRow, int thePosition, String restrictionName) {
 				row = theRow;
 				position = thePosition;
 				imgIndicator = (ImageView) row.findViewById(R.id.imgIndicator);
@@ -1096,6 +1150,7 @@ public class ActivityApp extends ActivityBase {
 				pbRunning = (ProgressBar) row.findViewById(R.id.pbRunning);
 				imgCbAsk = (ImageView) row.findViewById(R.id.imgCbAsk);
 				llName = (LinearLayout) row.findViewById(R.id.llName);
+				imgMoreOptions = (ImageView) row.findViewById(R.id.imgMoreOptions);
 			}
 		}
 
@@ -1211,6 +1266,16 @@ public class ActivityApp extends ActivityBase {
 					holder.llName.setEnabled(enabled && can);
 					holder.tvName.setEnabled(enabled && can);
 					holder.imgCbAsk.setEnabled(enabled && can);
+					holder.imgMoreOptions.setClickable(true);
+					holder.imgMoreOptions.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							Intent intentSettings = new Intent(ActivityApp.this, ActivityMoreOptions.class);
+							intentSettings.putExtra(ActivityApp.cUid, mAppInfo.getUid());
+							intentSettings.putExtra(ActivityApp.cRestrictionName, restrictionName);
+							ActivityApp.this.startActivity(intentSettings);
+						}
+					});
 
 					// Listen for restriction changes
 					holder.llName.setOnClickListener(new View.OnClickListener() {
@@ -1288,17 +1353,17 @@ public class ActivityApp extends ActivityBase {
 		@SuppressLint("InflateParams")
 		public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 			GroupViewHolder holder;
+			// Get entry
+			final String restrictionName = (String) getGroup(groupPosition);
+
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.restrictionentry, null);
-				holder = new GroupViewHolder(convertView, groupPosition);
+				holder = new GroupViewHolder(convertView, groupPosition, restrictionName);
 				convertView.setTag(holder);
 			} else {
 				holder = (GroupViewHolder) convertView.getTag();
 				holder.position = groupPosition;
 			}
-
-			// Get entry
-			final String restrictionName = (String) getGroup(groupPosition);
 
 			// Indicator state
 			holder.imgIndicator.setImageResource(getThemed(isExpanded ? R.attr.icon_expander_maximized
@@ -1606,7 +1671,7 @@ public class ActivityApp extends ActivityBase {
 		@Override
 		@SuppressLint("InflateParams")
 		public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView,
-				ViewGroup parent) {
+								 ViewGroup parent) {
 			ChildViewHolder holder;
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.restrictionchild, null);

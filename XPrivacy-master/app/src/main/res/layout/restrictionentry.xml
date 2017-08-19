@@ -105,12 +105,15 @@
         android:visibility="invisible" />
 
     <ImageView
-        android:id="@+id/imgCbFakeData"
+        android:id="@+id/imgMoreOptions"
         android:layout_width="32dip"
-        android:layout_height="32dip"
+        android:layout_height="20dip"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="3dip"
+        android:layout_marginLeft="5dip"
         android:contentDescription="@string/title_fake_data"
-        android:visibility="invisible" />
+        android:visibility="visible"
+        android:src="@drawable/more_options" />
+         />
+
 
 </LinearLayout>

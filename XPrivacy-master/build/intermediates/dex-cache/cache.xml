@@ -2,39 +2,81 @@
 <items version="2" >
 
     <item
-        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.0\jars\libs\internal_impl-23.0.0.jar"
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\libs\internal_impl-23.4.0.jar"
         jumboMode="false"
         revision="23.0.3"
-        sha1="8bd336eeae661e8311330284897ee07f8ebaa297">
-        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\internal_impl-23.0.0_224cfdcbe91ddfd05e0354c0d4adf0c6f089ff4c.jar" />
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\internal_impl-23.4.0_5832ee91348655bde8c44db5fcd934cc7c191d9b.jar" />
     </item>
     <item
-        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.0\jars\classes.jar"
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appindexing\8.1.0\jars\classes.jar"
         jumboMode="false"
         revision="23.0.3"
-        sha1="8413c27b45b7fe61dca4a98159f65e2cee215f5a">
-        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-23.0.0_7b56a8f6189e387b3483943837722e40a4d5bb1d.jar" />
+        sha1="4477ea44f5ec5ad064022a22691732d7638ff197">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-appindexing-8.1.0_ef631a9254d877063f0fd95ed82586fd93d8f6e8.jar" />
     </item>
     <item
-        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\26.0.0-alpha1\jars\classes.jar"
+        jar="C:\Users\root\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.4.0\support-annotations-23.4.0.jar"
         jumboMode="false"
         revision="23.0.3"
-        sha1="e176fd06c2ad5b50a2f5cb4de6000a83a7cb48f5">
-        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-cardview-v7-26.0.0-alpha1_6e4df7dd03215f878c7eb31115f1d00a3e63c6a2.jar" />
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\support-annotations-23.4.0_69a6c71d99bf2e768023e916f5c426745f3d6c5b.jar" />
     </item>
     <item
-        jar="C:\Users\root\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\26.0.0-alpha1\support-annotations-26.0.0-alpha1.jar"
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\23.4.0\jars\classes.jar"
         jumboMode="false"
         revision="23.0.3"
-        sha1="023ee503b631f69511e335a061ea008f8da60f40">
-        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\support-annotations-26.0.0-alpha1_0dc73bf289e33a5c579ad15f0e528ba5fb22dc57.jar" />
+        sha1="d9ecde39b460470e655de6e47c05573d2d5a8bfb">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-cardview-v7-23.4.0_5b33f4e4f041818db752297bbd0e246744c9e25e.jar" />
     </item>
     <item
-        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.0\jars\classes.jar"
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
         jumboMode="false"
         revision="23.0.3"
-        sha1="4fcf0b1879f8caf497c073e1432d398e9e2988c1">
-        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-23.0.0_db9df6e5e5d820255c79fe54cd9fabf61492a844.jar" />
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-support-vector-drawable-23.4.0_24823a7e6141af0b5a26219dff6eb9d5ce5b15c5.jar" />
+    </item>
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-23.4.0_5c630a609a4d5cfaf211db33deb19bd3a2c7961b.jar" />
+    </item>
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-animated-vector-drawable-23.4.0_64d5d7d1b5b0343aab9930217adb5a7f1986f479.jar" />
+    </item>
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-23.4.0_74edf04bc4a401aba63f3e264b769d458a46f303.jar" />
+    </item>
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="d0dda274b703dd9c5bb056867649d22b4171ae7d">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-basement-8.1.0_821eed2891b9faf0ff90161de35fe193c667891a.jar" />
+    </item>
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\design\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="5326d9a850d491714fef8cbfaa9ea3416f0bf0d2">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-design-23.4.0_c75703fed9a723feaa85fb878e36ef7c6564569f.jar" />
+    </item>
+    <item
+        jar="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="D:\Workspace\AndroidStudio\XPrivacy-master\app\build\intermediates\pre-dexed\debug\com.android.support-recyclerview-v7-23.4.0_d2c2ec7c14cf4701e4de8481d9a7a74b71a44b3a.jar" />
     </item>
 
 </items>
