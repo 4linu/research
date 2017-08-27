@@ -377,10 +377,19 @@ public class PrivacyService extends IPrivacyService.Stub {
 			try {
 				db.beginTransaction();
 				try {
-					//db.execSQL("DROP TABLE fakedata");
+					//db.execSQL("DROP TABLE if exists fakedata");
 					//db.execSQL("CREATE TABLE fakedata (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, time INTEGER NOT NULL)");
-					// Create method exception record
 					//db.execSQL("CREATE UNIQUE INDEX idx_fakedata ON fakedata(uid, restriction, method)");
+					db.execSQL("DROP INDEX if exists idx_policy");
+					db.execSQL("DROP INDEX if exists idx_attribute");
+					db.execSQL("DROP TABLE if exists policy");
+					db.execSQL("DROP TABLE if exists attribute");
+					db.execSQL("CREATE TABLE policy (uid INTEGER NOT NULL, category TEXT NOT NULL, restrictiontype INTEGER NOT NULL, overrides INTEGER NOT NULL)");
+					db.execSQL("CREATE TABLE attribute (uid INTEGER NOT NULL, category TEXT NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL, fact INTEGER NOT NULL)");
+					db.execSQL("CREATE UNIQUE INDEX idx_policy ON policy(uid, category)");
+
+					// Create method exception record
+
 					if (restriction.methodName != null) {
 						ContentValues mvalues = new ContentValues();
 						mvalues.put("uid", restriction.uid);
@@ -397,7 +406,13 @@ public class PrivacyService extends IPrivacyService.Stub {
 					}
 
 					db.setTransactionSuccessful();
-				} finally {
+					Util.log(Log.WARN, "Xprivacy updated XACML tables successfully");
+				}
+				catch(Exception ex)
+				{
+					Util.log(Log.WARN, "Xprivacy updating XACML tables : " + ex.getMessage());
+				}
+				finally {
 					db.endTransaction();
 				}
 			} finally {
@@ -3149,10 +3164,17 @@ public class PrivacyService extends IPrivacyService.Stub {
 								db.execSQL("CREATE TABLE setting (uid INTEGER NOT NULL, name TEXT NOT NULL, value TEXT)");
 								db.execSQL("CREATE TABLE usage (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, restricted INTEGER NOT NULL, time INTEGER NOT NULL)");
 								db.execSQL("CREATE TABLE fakedata (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, time INTEGER NOT NULL)");
+
+								db.execSQL("CREATE TABLE policy (uid INTEGER NOT NULL, category TEXT NOT NULL, restrictiontype INTEGER NOT NULL, overrides INTEGER NOT NULL)");
+								db.execSQL("CREATE TABLE attribute (uid INTEGER NOT NULL, category TEXT NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL, fact INTEGER NOT NULL)");
+								db.execSQL("CREATE UNIQUE INDEX idx_policy ON policy(uid, category)");
+
+
 								db.execSQL("CREATE UNIQUE INDEX idx_restriction ON restriction(uid, restriction, method)");
 								db.execSQL("CREATE UNIQUE INDEX idx_setting ON setting(uid, name)");
 								db.execSQL("CREATE UNIQUE INDEX idx_usage ON usage(uid, restriction, method)");
 								db.execSQL("CREATE UNIQUE INDEX idx_fakedata ON fakedata(uid, restriction, method)");
+
 								db.setVersion(1);
 								db.setTransactionSuccessful();
 							} finally {
