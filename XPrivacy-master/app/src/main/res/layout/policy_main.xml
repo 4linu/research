@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/textViewPolicyContextId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+    <Button
+        android:id="@+id/buttonAddPolicyId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Rule"
+        />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+
+            android:weightSum="1">
+
+            <Spinner
+                android:id="@+id/options_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/editText1Id"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/radioGroupId"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioPermitId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="permit" />
+
+                <RadioButton
+                    android:id="@+id/radioDenyId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="deny" />
+
+
+            </RadioGroup>
+            <Button
+                android:id="@+id/buttonDelPolicyId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Delete"
+                android:visibility="visible" />
+
+        </LinearLayout>
+    </ScrollView>
+    <Button
+        android:id="@+id/buttonSavePolicyId"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:text="Save"
+        android:visibility="visible" />
+</LinearLayout>

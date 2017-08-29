@@ -270,5 +270,10 @@ however it is impossible to guarantee it will work flawlessly on each and every 
     <string name="permission_restrictions">Manage XPrivacy restrictions and settings</string>
     <string name="fingerprint" translatable="false">10620ae961d78854f6c9cd872c4388232849c799</string>
     <string name="title_activity_activity_more_options">ActivityMoreOptions</string>
-
+    <string-array name="options_spinner">
+        <item>Starts with</item>
+        <item>Ends with</item>
+        <item>Is like</item>
+        <item>Equals</item>
+    </string-array>
 </resources>

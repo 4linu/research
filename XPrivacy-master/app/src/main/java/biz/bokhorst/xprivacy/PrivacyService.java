@@ -84,6 +84,8 @@ public class PrivacyService extends IPrivacyService.Stub {
 	private static final String cTableUsage = "usage";
 	private static final String cTableSetting = "setting";
 	private static final String cTableFakeData = "fakedata";
+	private static final String cTablePolicy = "policy";
+	private static final String cTableRule = "rule";
 
 	private static final int cCurrentVersion = 481;
 	private static final String cServiceName = "xprivacy481";
@@ -105,6 +107,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 	private Map<CSetting, CSetting> mSettingCache = new HashMap<CSetting, CSetting>();
 	private Map<CRestriction, CRestriction> mAskedOnceCache = new HashMap<CRestriction, CRestriction>();
 	private Map<CRestriction, CRestriction> mRestrictionCache = new HashMap<CRestriction, CRestriction>();
+	private Map<PPolicy, PPolicy> mPoliciesCache = new HashMap<PPolicy, PPolicy>();
 
 	private final long cMaxUsageDataHours = 12;
 	private final int cMaxUsageDataCount = 700;
@@ -384,8 +387,9 @@ public class PrivacyService extends IPrivacyService.Stub {
 					db.execSQL("DROP INDEX if exists idx_attribute");
 					db.execSQL("DROP TABLE if exists policy");
 					db.execSQL("DROP TABLE if exists attribute");
+					db.execSQL("DROP TABLE if exists rule");
 					db.execSQL("CREATE TABLE policy (uid INTEGER NOT NULL, category TEXT NOT NULL, restrictiontype INTEGER NOT NULL, overrides INTEGER NOT NULL)");
-					db.execSQL("CREATE TABLE attribute (uid INTEGER NOT NULL, category TEXT NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL, fact INTEGER NOT NULL)");
+					db.execSQL("CREATE TABLE rule (uid INTEGER NOT NULL, category TEXT NOT NULL, attributename TEXT NOT NULL, attributevalue TEXT NOT NULL, fact INTEGER NOT NULL)");
 					db.execSQL("CREATE UNIQUE INDEX idx_policy ON policy(uid, category)");
 
 					// Create method exception record
@@ -1331,6 +1335,87 @@ public class PrivacyService extends IPrivacyService.Stub {
 		try {
 			enforcePermission(setting.uid);
 			setSettingInternal(setting);
+		} catch (Throwable ex) {
+			Util.bug(null, ex);
+			throw new RemoteException(ex.toString());
+		}
+	}
+
+	public void setPolicy(PPolicy p) throws RemoteException {
+		try {
+			enforcePermission(p.getUid());
+			setPolicyInternal(p);
+		} catch (Throwable ex) {
+			Util.bug(null, ex);
+			throw new RemoteException(ex.toString());
+		}
+	}
+
+
+	public PPolicy getPolicy(int uid, String category)
+	{
+		PPolicy p = null;
+
+
+		return p;
+	}
+
+	private void setPolicyInternal(PPolicy p) throws RemoteException {
+		try {
+			SQLiteDatabase db = getDb();
+			if (db == null)
+				return;
+			Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal setting=" + p.toString());
+			mLock.writeLock().lock();
+			try {
+				db.beginTransaction();
+				try {
+					//db.execSQL();
+					//create/modify policy
+					ContentValues pvalues = new ContentValues();
+					//CREATE TABLE policy (uid INTEGER NOT NULL, category TEXT NOT NULL, restrictiontype INTEGER NOT NULL, overrides INTEGER NOT NULL)
+					pvalues.put("uid", p.getUid());
+					pvalues.put("category", p.getCategory());
+					pvalues.put("restrictiontype", PPolicy.POLICY_ACTIVE);
+					pvalues.put("overrides", PPolicy.ALLOW_OVERRIDES);
+
+					Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal, insert into policy, ContentValues=" + pvalues.toString());
+					// Insert/update record
+					db.insertWithOnConflict(cTablePolicy, null, pvalues, SQLiteDatabase.CONFLICT_REPLACE);
+
+					//delete previous rules
+					db.delete(cTableRule, "uid=? AND category=?",
+							new String[] { Integer.toString(p.getUid()), p.getCategory()});
+					// insert rules
+					for (PolicyRule r : p.getRules()) {
+
+						ContentValues values = new ContentValues();
+						values.put("uid", p.getUid());
+						values.put("category", p.getCategory());
+						values.put("attributename", r.getAttributeName());
+						values.put("attributevalue", r.getAttributeValue());
+						values.put("fact", r.getFact());
+
+						Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal insert into rule, r=" + r.toString());
+						// Insert/update record
+						db.insertWithOnConflict(cTableRule, null, values, SQLiteDatabase.CONFLICT_NONE);
+					}
+
+					db.setTransactionSuccessful();
+				} finally {
+					db.endTransaction();
+				}
+			} finally {
+				mLock.writeLock().unlock();
+			}
+
+			PPolicy key = p;
+			// Update cache
+			synchronized (mPoliciesCache) {
+				if (mPoliciesCache.containsKey(key))
+					mPoliciesCache.remove(key);
+				mPoliciesCache.put(key, key);
+			}
 		} catch (Throwable ex) {
 			Util.bug(null, ex);
 			throw new RemoteException(ex.toString());
@@ -3166,7 +3251,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 								db.execSQL("CREATE TABLE fakedata (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, time INTEGER NOT NULL)");
 
 								db.execSQL("CREATE TABLE policy (uid INTEGER NOT NULL, category TEXT NOT NULL, restrictiontype INTEGER NOT NULL, overrides INTEGER NOT NULL)");
-								db.execSQL("CREATE TABLE attribute (uid INTEGER NOT NULL, category TEXT NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL, fact INTEGER NOT NULL)");
+								db.execSQL("CREATE TABLE rule (uid INTEGER NOT NULL, category TEXT NOT NULL, attributename TEXT NOT NULL, attributevalue TEXT NOT NULL, fact INTEGER NOT NULL)");
 								db.execSQL("CREATE UNIQUE INDEX idx_policy ON policy(uid, category)");
 
 

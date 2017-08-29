@@ -2,6 +2,7 @@ package biz.bokhorst.xprivacy;
 
 import biz.bokhorst.xprivacy.PRestriction;
 import biz.bokhorst.xprivacy.PSetting;
+import biz.bokhorst.xprivacy.PPolicy;
 
 interface IPrivacyService {
 	int getVersion();
@@ -23,6 +24,7 @@ interface IPrivacyService {
 	void deleteUsage(int uid);
 
 	void setSetting(in PSetting setting);
+	void setPolicy(in PPolicy p);
 	void setSettingList(in List<PSetting> listSetting);
 	PSetting getSetting(in PSetting setting);
 	List<PSetting> getSettingList(in PSetting selector);

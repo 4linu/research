@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -170,6 +171,7 @@ public class PrivacyManager {
 	private static Map<String, List<Hook>> mPermission = new LinkedHashMap<String, List<Hook>>();
 	private static Map<CSetting, CSetting> mSettingsCache = new HashMap<CSetting, CSetting>();
 	private static Map<CSetting, CSetting> mTransientCache = new HashMap<CSetting, CSetting>();
+	private static Map<PPolicy, PPolicy>   mPoliciesCache  = new HashMap<PPolicy, PPolicy>();
 	public static Map<CRestriction, CRestriction> mRestrictionCache = new HashMap<CRestriction, CRestriction>();
 	private static SparseArray<Map<String, Boolean>> mPermissionRestrictionCache = new SparseArray<Map<String, Boolean>>();
 	private static SparseArray<Map<Hook, Boolean>> mPermissionHookCache = new SparseArray<Map<Hook, Boolean>>();
@@ -889,6 +891,26 @@ public class PrivacyManager {
 		}
 		Collections.sort(listUsage, new ParcelableRestrictionCompare());
 		return listUsage;
+	}
+
+	public static void setPolicy(PPolicy p) {
+			checkCaller();
+
+			try {
+				//PrivacyService.getClient().setSetting(new PSetting(0, null, null, null));
+
+				PrivacyService.getClient().setPolicy(p);
+
+				// Update cache
+				PPolicy key = p;
+				synchronized (mPoliciesCache) {
+					if (mPoliciesCache.containsKey(key))
+						mPoliciesCache.remove(key);
+					mPoliciesCache.put(key, key);
+				}
+			} catch (Throwable ex) {
+				Util.bug(null, ex);
+			}
 	}
 
 	public static class ParcelableRestrictionCompare implements Comparator<PRestriction> {
