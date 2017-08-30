@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.jar.Attributes;
 
 /**
@@ -18,6 +19,9 @@ public class PPolicy implements Parcelable {
     public static final int DENY_OVERRIDES = 0;
     private int uid;
     private String category;
+    private int overrides;
+
+    private long mExpiry;
 
     public ArrayList<PolicyRule> rules;
 
@@ -25,6 +29,13 @@ public class PPolicy implements Parcelable {
         setUid(uid);
         setCategory(category);
         setRules(rules);
+        setExpiry(0);
+    }
+
+    public PPolicy(int uid, String category) {
+        setUid(uid);
+        setCategory(category);
+        setExpiry(0);
     }
 
     @Override
@@ -34,11 +45,32 @@ public class PPolicy implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(uid);
 
+        out.writeString(category);
+        out.writeInt(overrides);
+        out.writeInt(rules.size());
+        for (PolicyRule r : rules)
+        {
+            out.writeString(r.getAttributeName());
+            out.writeString(r.getAttributeValue());
+            out.writeInt(r.getFact());
+        }
     }
 
     public void readFromParcel(Parcel in) {
-
+        int rulesSize = 0;
+        uid = in.readInt();
+        category = in.readString();
+        overrides = in.readInt();
+        rulesSize = in.readInt();
+        if (rulesSize > 0) {
+            rules = new ArrayList<PolicyRule>();
+            while (rulesSize > 0) {
+                PolicyRule r = new PolicyRule(in.readString(), in.readString(), in.readInt());
+                rulesSize--;
+            }
+        }
     }
 
     public void setCategory(String category) {
@@ -77,5 +109,42 @@ public class PPolicy implements Parcelable {
 
     public ArrayList<PolicyRule> getRules() {
         return rules;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        PPolicy other = (PPolicy) obj;
+        // @formatter:off
+        return (uid == other.getUid()
+                && category.compareTo(other.getCategory()) == 0);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = uid;
+        if (category != null)
+            hash = hash ^ category.hashCode();
+        return hash;
+    }
+
+    public void setExpiry(long time) {
+        mExpiry = time;
+    }
+
+    public boolean isExpired() {
+        return (new Date().getTime() > mExpiry);
+    }
+
+    @Override
+    public String toString() {
+        return uid + ":" + category + "= tbd";
+    }
+
+    public boolean hasRules() {
+        return rules != null && rules.size() > 0;
+    }
+
+    public void setOverrides(int overrides) {
+        this.overrides = overrides;
     }
 }

@@ -16,6 +16,12 @@ public class PolicyRule {
         setFact(attrFact);
     }
 
+    public PolicyRule(String attrName, String val, int attrFact) {
+        setAttributeName(attrName);
+        setAttributeValue(val);
+        setFact(attrFact);
+    }
+
     public void setAttributeName(String attributeName) {
         this.attributeName = attributeName;
     }

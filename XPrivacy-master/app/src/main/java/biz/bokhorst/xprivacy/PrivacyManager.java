@@ -913,6 +913,52 @@ public class PrivacyManager {
 			}
 	}
 
+	public static PPolicy getPolicy(int uid, String category) {
+		PPolicy result = null;
+		if (uid <= 0)
+			return null;
+
+		// Check cache
+		boolean cached = false;
+		PPolicy key = new PPolicy(uid, category);
+		synchronized (mRestrictionCache) {
+			if (mPoliciesCache.containsKey(key)) {
+
+				PPolicy entry = mPoliciesCache.get(key);
+				if (!entry.isExpired()) {
+					cached = true;
+					result = entry;
+				}
+			}
+			else {
+				//	Util.log(hook, Log.WARN, "Inside PrivacyManager.getRestrictionExtra - not found in mRestrictionCache");
+			}
+		}
+
+		// Get restriction
+		if (!cached)
+			try {
+				//Util.log(hook, Log.WARN, "Inside PrivacyManager.getRestrictionExtra - not cached");
+				result = PrivacyService.getPolicyProxy(key);
+
+				if (result != null)
+				{
+					result.setExpiry(new Date().getTime() + 15000);
+					synchronized (mPoliciesCache) {
+						if (mPoliciesCache.containsKey(result))
+							mPoliciesCache.remove(result);
+						mPoliciesCache.put(result, result);
+						//	Util.log(null, Log.WARN, "Updating cache, key=" + key);
+					}
+				}
+			} catch (Throwable ex) {
+				Util.log(Log.WARN, ex.getMessage());
+			}
+
+		// Result
+		return result;
+	}
+
 	public static class ParcelableRestrictionCompare implements Comparator<PRestriction> {
 		@Override
 		public int compare(PRestriction one, PRestriction another) {

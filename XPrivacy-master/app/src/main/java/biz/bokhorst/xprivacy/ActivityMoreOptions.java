@@ -28,8 +28,17 @@ public class ActivityMoreOptions extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         final int uid = extras.getInt(cUid);
         final String category = extras.getString(cRestrictionName);
+
+        PPolicy p = PrivacyManager.getPolicy(uid, category);
+
+
         TextView tv1 = (TextView) findViewById(R.id.textViewPolicyContextId);
         tv1.setText("Uid=" + uid + "  category name=" + category);
+        if (p != null && p.hasRules())
+        {
+            EditText ed1 = (EditText) findViewById(R.id.editText1Id);
+            ed1.setText(p.getRules().get(0).getAttributeValue());
+        }
         Spinner sp = (Spinner) findViewById(R.id.options_spinner);
         ArrayAdapter<CharSequence> spAdapter = ArrayAdapter.createFromResource(this, R.array.options_spinner, android.R.layout.simple_spinner_dropdown_item);
         sp.setAdapter(spAdapter);
@@ -39,7 +48,7 @@ public class ActivityMoreOptions extends AppCompatActivity {
             public void onClick(View v) {
 
                 EditText ed1 = (EditText) findViewById(R.id.editText1Id);
-                Spinner sp1 = (Spinner)  findViewById(R.id.options_spinner);
+                Spinner sp1 = (Spinner) findViewById(R.id.options_spinner);
                 RadioGroup rg = (RadioGroup) findViewById(R.id.radioGroupId);
                 RadioButton rb = (RadioButton) findViewById(rg.getCheckedRadioButtonId());
                 String compareRule = sp1.getSelectedItem().toString();

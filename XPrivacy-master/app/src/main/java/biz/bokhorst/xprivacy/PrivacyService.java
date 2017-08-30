@@ -96,6 +96,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 	private SQLiteDatabase mDbUsage = null;
 	private SQLiteStatement stmtGetRestriction = null;
 	private SQLiteStatement stmtGetSetting = null;
+	private SQLiteStatement stmtGetPolicy = null;
 	private SQLiteStatement stmtGetUsageRestriction = null;
 	private SQLiteStatement stmtGetUsageMethod = null;
 	private ReentrantReadWriteLock mLock = new ReentrantReadWriteLock(true);
@@ -115,6 +116,21 @@ public class PrivacyService extends IPrivacyService.Stub {
 
 	private ExecutorService mExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
 			new PriorityThreadFactory());
+
+	public static PPolicy getPolicyProxy(PPolicy key) throws RemoteException {
+			if (isRegistered())
+				return mPrivacyService.getPolicy(key);
+			else {
+				IPrivacyService client = getClient();
+				if (client == null) {
+					Log.w("XPrivacy", "No client for " + key.getCategory());
+					return null;
+				} else {
+					Util.log(Log.WARN, "Inside PrivacyService.getRestrictionProxy, before call to getRestriction");
+					return client.getPolicy(key);
+				}
+			}
+	}
 
 	final class PriorityThreadFactory implements ThreadFactory {
 		@Override
@@ -1352,12 +1368,107 @@ public class PrivacyService extends IPrivacyService.Stub {
 	}
 
 
-	public PPolicy getPolicy(int uid, String category)
+	public PPolicy getPolicy(PPolicy key)
 	{
-		PPolicy p = null;
+		PPolicy result = key;
+		long start = System.currentTimeMillis();
+
+		// Translate isolated uid
+		int userId = key.getUid();
+
+		// Special case
 
 
-		return p;
+		// Disable strict mode
+		ThreadPolicy oldPolicy = StrictMode.getThreadPolicy();
+		ThreadPolicy newPolicy = new ThreadPolicy.Builder(oldPolicy).permitDiskReads().permitDiskWrites().build();
+		StrictMode.setThreadPolicy(newPolicy);
+
+		try {
+			// No permissions enforced
+
+			// Check cache
+			synchronized (mPoliciesCache) {
+				if (mPoliciesCache.containsKey(key)) {
+					result = mPoliciesCache.get(key);
+					return result;
+				}
+			}
+
+			// No persmissions required
+			SQLiteDatabase db = getDb();
+			if (db == null)
+				return result;
+
+			// Precompile statement when needed
+
+				String sql = "SELECT * FROM " + cTablePolicy + " WHERE uid=" + key.getUid() +
+						" AND category='" + key.getCategory() + "'";
+				//stmtGetPolicy = db.compileStatement(sql);
+
+
+			// Execute statement
+			boolean found = false;
+			mLock.readLock().lock();
+			try {
+				db.beginTransaction();
+				try {
+					try {
+						synchronized (stmtGetPolicy) {
+							stmtGetPolicy.clearBindings();
+							Cursor res = db.rawQuery(sql, null);
+							if (res.moveToFirst())
+							{
+								result.setOverrides(res.getInt(3));
+							}
+							//ResultSet rs = stmtGetPolicy.
+							found = true;
+							//search for rules
+							sql = "SELECT * FROM " + cTableRule + " WHERE uid=" + key.getUid() +
+									" AND category='" + key.getCategory() + "'";
+							res = db.rawQuery(sql, null);
+							if (res.moveToFirst())
+							{
+								ArrayList<PolicyRule> prules = new ArrayList<PolicyRule>();
+								do {
+									PolicyRule rule = new PolicyRule(res.getString(2), res.getString(3), res.getInt(4));
+									prules.add(rule);
+								} while (res.moveToNext());
+								result.setRules(prules);
+							}
+						}
+					} catch (SQLiteDoneException ignored) {
+					}
+
+					db.setTransactionSuccessful();
+				} finally {
+					db.endTransaction();
+				}
+			} finally {
+				mLock.readLock().unlock();
+			}
+
+			// Add to cache
+			if (found) {
+				synchronized (mPoliciesCache) {
+					if (mPoliciesCache.containsKey(key))
+						mPoliciesCache.remove(key);
+					mPoliciesCache.put(key, result);
+				}
+			}
+		} catch (SQLiteException ex) {
+			notifyException(ex);
+		} catch (Throwable ex) {
+			Util.bug(null, ex);
+		} finally {
+			StrictMode.setThreadPolicy(oldPolicy);
+		}
+		if (result.hasRules()) {
+			long ms = System.currentTimeMillis() - start;
+			Util.log(null, ms < PrivacyManager.cWarnServiceDelayMs ? Log.INFO : Log.WARN,
+					String.format("Get service Policy %s %d ms", result, ms));
+		}
+		return result;
 	}
 
 	private void setPolicyInternal(PPolicy p) throws RemoteException {
