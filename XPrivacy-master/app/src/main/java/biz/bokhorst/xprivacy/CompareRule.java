@@ -19,5 +19,19 @@ public class CompareRule
         else
             return FACT_DENY;
     }
+
+    public static String factToString(int fact) {
+        if (fact == FACT_PERMIT)
+            return "permit";
+        return "deny";
+    }
+
+    public static String getRegexValue(String attributeValue) {
+        return attributeValue.substring(attributeValue.indexOf('|') + 1);
+    }
+
+    public static String getRegexType(String attributeValue) {
+        return attributeValue.substring(0, attributeValue.indexOf('|'));
+    }
 }
 

@@ -894,8 +894,9 @@ public class PrivacyManager {
 	}
 
 	public static void setPolicy(PPolicy p) {
-			checkCaller();
 
+			checkCaller();
+			Util.log(Log.WARN, "Inside PrivacyManager.setPolicy, policy=" + p.toString());
 			try {
 				//PrivacyService.getClient().setSetting(new PSetting(0, null, null, null));
 
@@ -906,6 +907,7 @@ public class PrivacyManager {
 				synchronized (mPoliciesCache) {
 					if (mPoliciesCache.containsKey(key))
 						mPoliciesCache.remove(key);
+					key.setExpiry(new Date().getTime() + 1500);
 					mPoliciesCache.put(key, key);
 				}
 			} catch (Throwable ex) {
@@ -917,7 +919,7 @@ public class PrivacyManager {
 		PPolicy result = null;
 		if (uid <= 0)
 			return null;
-
+		Util.log(Log.WARN, "Inside PrivacyManager.getPolicy");
 		// Check cache
 		boolean cached = false;
 		PPolicy key = new PPolicy(uid, category);

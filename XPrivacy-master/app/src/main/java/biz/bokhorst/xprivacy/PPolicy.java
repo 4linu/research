@@ -19,6 +19,7 @@ public class PPolicy implements Parcelable {
     public static final int DENY_OVERRIDES = 0;
     private int uid;
     private String category;
+    private int restrictionType;
     private int overrides;
 
     private long mExpiry;
@@ -28,6 +29,17 @@ public class PPolicy implements Parcelable {
     public PPolicy(int uid, String category, ArrayList<PolicyRule> rules) {
         setUid(uid);
         setCategory(category);
+        setOverrides(ALLOW_OVERRIDES);
+        setRestrictionType(POLICY_ACTIVE);
+        setRules(rules);
+        setExpiry(0);
+    }
+
+    public PPolicy(int uid, String category, int overrides, ArrayList<PolicyRule> rules) {
+        setUid(uid);
+        setCategory(category);
+        setOverrides(overrides);
+        setRestrictionType(POLICY_ACTIVE);
         setRules(rules);
         setExpiry(0);
     }
@@ -35,6 +47,9 @@ public class PPolicy implements Parcelable {
     public PPolicy(int uid, String category) {
         setUid(uid);
         setCategory(category);
+        setRestrictionType(POLICY_ACTIVE);
+        setOverrides(ALLOW_OVERRIDES);
+        rules = new ArrayList<PolicyRule>();
         setExpiry(0);
     }
 
@@ -65,9 +80,11 @@ public class PPolicy implements Parcelable {
         overrides = in.readInt();
         rulesSize = in.readInt();
         if (rulesSize > 0) {
-            rules = new ArrayList<PolicyRule>();
+            if (rules == null)
+                rules = new ArrayList<PolicyRule>();
             while (rulesSize > 0) {
                 PolicyRule r = new PolicyRule(in.readString(), in.readString(), in.readInt());
+                rules.add(r);
                 rulesSize--;
             }
         }
@@ -136,8 +153,20 @@ public class PPolicy implements Parcelable {
     }
 
     @Override
-    public String toString() {
-        return uid + ":" + category + "= tbd";
+    public String toString()
+    {
+        String ret = uid + ":" + category + ":overrides:" + overrides;
+
+        if (hasRules())
+        {
+            ret += "  rules: ";
+            for (PolicyRule r : rules)
+            {
+                ret += r.toString() + "  ";
+            }
+        }
+
+        return ret;
     }
 
     public boolean hasRules() {
@@ -146,5 +175,17 @@ public class PPolicy implements Parcelable {
 
     public void setOverrides(int overrides) {
         this.overrides = overrides;
+    }
+
+    public int getOverrides() {
+        return overrides;
+    }
+
+    public int getRestrictionType() {
+        return restrictionType;
+    }
+
+    public void setRestrictionType(int restrictionType) {
+        this.restrictionType = restrictionType;
     }
 }

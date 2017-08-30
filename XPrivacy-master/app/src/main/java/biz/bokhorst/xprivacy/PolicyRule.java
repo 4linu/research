@@ -45,4 +45,10 @@ public class PolicyRule {
     public int getFact() {
         return fact;
     }
+
+
+    public String toString()
+    {
+        return "{" + attributeName + "=" + attributeValue + "  effect=" + CompareRule.factToString(fact) + "}";
+    }
 }

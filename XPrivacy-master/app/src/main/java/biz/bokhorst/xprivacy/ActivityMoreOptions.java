@@ -34,14 +34,23 @@ public class ActivityMoreOptions extends AppCompatActivity {
 
         TextView tv1 = (TextView) findViewById(R.id.textViewPolicyContextId);
         tv1.setText("Uid=" + uid + "  category name=" + category);
-        if (p != null && p.hasRules())
-        {
-            EditText ed1 = (EditText) findViewById(R.id.editText1Id);
-            ed1.setText(p.getRules().get(0).getAttributeValue());
-        }
         Spinner sp = (Spinner) findViewById(R.id.options_spinner);
         ArrayAdapter<CharSequence> spAdapter = ArrayAdapter.createFromResource(this, R.array.options_spinner, android.R.layout.simple_spinner_dropdown_item);
         sp.setAdapter(spAdapter);
+
+        if (p != null && p.hasRules())
+        {
+            PolicyRule r = p.getRules().get(0);
+            EditText ed1 = (EditText) findViewById(R.id.editText1Id);
+            String regexValue = CompareRule.getRegexValue(r.getAttributeValue());
+            String regexType = CompareRule.getRegexType(r.getAttributeValue());
+
+            ed1.setText(regexValue);
+            sp.setSelection(spAdapter.getPosition(regexType));
+            RadioGroup rg = (RadioGroup) findViewById(R.id.radioGroupId);
+            ((RadioButton)(rg.getChildAt(r.getFact() ^ 1))).setChecked(true);
+        }
+
         Button save = (Button) findViewById(R.id.buttonSavePolicyId);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,8 +67,9 @@ public class ActivityMoreOptions extends AppCompatActivity {
                 TextView tvs = (TextView) findViewById(R.id.textViewPolicyContextId);
                 tvs.setText(result);
                 ArrayList<PolicyRule> policyRules = new ArrayList<PolicyRule>();
-                policyRules.add(new PolicyRule(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME.toString(), compareRule, attributeValue, CompareRule.getFact(fact)));
+                policyRules.add(new PolicyRule(GranularPermissions.getInstance().get(category), compareRule, attributeValue, CompareRule.getFact(fact)));
                 PPolicy p = new PPolicy(uid, category, policyRules);
+
                 PrivacyManager.setPolicy(p);
             }
         });

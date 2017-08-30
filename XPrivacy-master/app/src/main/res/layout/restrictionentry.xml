@@ -111,7 +111,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="5dip"
         android:contentDescription="@string/title_fake_data"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:src="@drawable/more_options" />
          />
 

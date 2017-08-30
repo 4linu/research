@@ -1266,16 +1266,20 @@ public class ActivityApp extends ActivityBase {
 					holder.llName.setEnabled(enabled && can);
 					holder.tvName.setEnabled(enabled && can);
 					holder.imgCbAsk.setEnabled(enabled && can);
-					holder.imgMoreOptions.setClickable(true);
-					holder.imgMoreOptions.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							Intent intentSettings = new Intent(ActivityApp.this, ActivityMoreOptions.class);
-							intentSettings.putExtra(ActivityApp.cUid, mAppInfo.getUid());
-							intentSettings.putExtra(ActivityApp.cRestrictionName, restrictionName);
-							ActivityApp.this.startActivity(intentSettings);
-						}
-					});
+					if (GranularPermissions.getInstance().contains(restrictionName)) {
+						holder.imgMoreOptions.setVisibility(View.VISIBLE);
+						holder.imgMoreOptions.setClickable(true);
+						holder.imgMoreOptions.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								Intent intentSettings = new Intent(ActivityApp.this, ActivityMoreOptions.class);
+								intentSettings.putExtra(ActivityApp.cUid, mAppInfo.getUid());
+								intentSettings.putExtra(ActivityApp.cRestrictionName, restrictionName);
+								ActivityApp.this.startActivity(intentSettings);
+
+							}
+						});
+					}
 
 					// Listen for restriction changes
 					holder.llName.setOnClickListener(new View.OnClickListener() {

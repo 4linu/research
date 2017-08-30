@@ -1358,11 +1358,12 @@ public class PrivacyService extends IPrivacyService.Stub {
 	}
 
 	public void setPolicy(PPolicy p) throws RemoteException {
+		Util.log(Log.WARN, "Inside PrivacyService.setPolicy");
 		try {
 			enforcePermission(p.getUid());
 			setPolicyInternal(p);
 		} catch (Throwable ex) {
-			Util.bug(null, ex);
+			Util.log(Log.ERROR, "PrivacyService.setPolicyInternal threw RemoteException" + ex.getMessage());
 			throw new RemoteException(ex.toString());
 		}
 	}
@@ -1472,11 +1473,12 @@ public class PrivacyService extends IPrivacyService.Stub {
 	}
 
 	private void setPolicyInternal(PPolicy p) throws RemoteException {
+		Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal");
 		try {
 			SQLiteDatabase db = getDb();
 			if (db == null)
 				return;
-			Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal setting=" + p.toString());
+			Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal policy=" + p.toString());
 			mLock.writeLock().lock();
 			try {
 				db.beginTransaction();
@@ -1487,8 +1489,8 @@ public class PrivacyService extends IPrivacyService.Stub {
 					//CREATE TABLE policy (uid INTEGER NOT NULL, category TEXT NOT NULL, restrictiontype INTEGER NOT NULL, overrides INTEGER NOT NULL)
 					pvalues.put("uid", p.getUid());
 					pvalues.put("category", p.getCategory());
-					pvalues.put("restrictiontype", PPolicy.POLICY_ACTIVE);
-					pvalues.put("overrides", PPolicy.ALLOW_OVERRIDES);
+					pvalues.put("restrictiontype", p.getRestrictionType());
+					pvalues.put("overrides", p.getOverrides());
 
 					Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal, insert into policy, ContentValues=" + pvalues.toString());
 					// Insert/update record
@@ -1496,24 +1498,32 @@ public class PrivacyService extends IPrivacyService.Stub {
 
 					//delete previous rules
 					db.delete(cTableRule, "uid=? AND category=?",
-							new String[] { Integer.toString(p.getUid()), p.getCategory()});
+							new String[]{Integer.toString(p.getUid()), p.getCategory()});
+
 					// insert rules
-					for (PolicyRule r : p.getRules()) {
+					if (p.hasRules()) {
+						for (PolicyRule r : p.getRules()) {
 
-						ContentValues values = new ContentValues();
-						values.put("uid", p.getUid());
-						values.put("category", p.getCategory());
-						values.put("attributename", r.getAttributeName());
-						values.put("attributevalue", r.getAttributeValue());
-						values.put("fact", r.getFact());
+							ContentValues values = new ContentValues();
+							values.put("uid", p.getUid());
+							values.put("category", p.getCategory());
+							values.put("attributename", r.getAttributeName());
+							values.put("attributevalue", r.getAttributeValue());
+							values.put("fact", r.getFact());
 
-						Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal insert into rule, r=" + r.toString());
-						// Insert/update record
-						db.insertWithOnConflict(cTableRule, null, values, SQLiteDatabase.CONFLICT_NONE);
+							Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal insert into rule, r=" + r.toString());
+							// Insert/update record
+							db.insertWithOnConflict(cTableRule, null, values, SQLiteDatabase.CONFLICT_NONE);
+						}
 					}
-
 					db.setTransactionSuccessful();
-				} finally {
+
+				}
+				catch (Exception e)
+				{
+					Util.log(Log.ERROR, "Insert into policy table or rule table gone wrong, message=" + e.getMessage());
+				}
+				finally {
 					db.endTransaction();
 				}
 			} finally {
