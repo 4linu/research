@@ -923,7 +923,7 @@ public class PrivacyManager {
 		// Check cache
 		boolean cached = false;
 		PPolicy key = new PPolicy(uid, category);
-		synchronized (mRestrictionCache) {
+		synchronized (mPoliciesCache) {
 			if (mPoliciesCache.containsKey(key)) {
 
 				PPolicy entry = mPoliciesCache.get(key);
@@ -940,7 +940,7 @@ public class PrivacyManager {
 		// Get restriction
 		if (!cached)
 			try {
-				//Util.log(hook, Log.WARN, "Inside PrivacyManager.getRestrictionExtra - not cached");
+				Util.log(Log.WARN, "Inside PrivacyManager.getPolicy - not cached");
 				result = PrivacyService.getPolicyProxy(key);
 
 				if (result != null)
@@ -950,11 +950,11 @@ public class PrivacyManager {
 						if (mPoliciesCache.containsKey(result))
 							mPoliciesCache.remove(result);
 						mPoliciesCache.put(result, result);
-						//	Util.log(null, Log.WARN, "Updating cache, key=" + key);
+							Util.log(null, Log.WARN, "Updating cache, key=" + result);
 					}
 				}
 			} catch (Throwable ex) {
-				Util.log(Log.WARN, ex.getMessage());
+				Util.log(Log.WARN, "Exception in PrivacyManager.getPolicy, ex=" + ex.getMessage());
 			}
 
 		// Result

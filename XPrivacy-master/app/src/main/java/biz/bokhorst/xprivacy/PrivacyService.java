@@ -399,7 +399,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 					//db.execSQL("DROP TABLE if exists fakedata");
 					//db.execSQL("CREATE TABLE fakedata (uid INTEGER NOT NULL, restriction TEXT NOT NULL, method TEXT NOT NULL, time INTEGER NOT NULL)");
 					//db.execSQL("CREATE UNIQUE INDEX idx_fakedata ON fakedata(uid, restriction, method)");
-					db.execSQL("DROP INDEX if exists idx_policy");
+					/*db.execSQL("DROP INDEX if exists idx_policy");
 					db.execSQL("DROP INDEX if exists idx_attribute");
 					db.execSQL("DROP TABLE if exists policy");
 					db.execSQL("DROP TABLE if exists attribute");
@@ -407,7 +407,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 					db.execSQL("CREATE TABLE policy (uid INTEGER NOT NULL, category TEXT NOT NULL, restrictiontype INTEGER NOT NULL, overrides INTEGER NOT NULL)");
 					db.execSQL("CREATE TABLE rule (uid INTEGER NOT NULL, category TEXT NOT NULL, attributename TEXT NOT NULL, attributevalue TEXT NOT NULL, fact INTEGER NOT NULL)");
 					db.execSQL("CREATE UNIQUE INDEX idx_policy ON policy(uid, category)");
-
+*/
 					// Create method exception record
 
 					if (restriction.methodName != null) {
@@ -1384,7 +1384,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 		ThreadPolicy oldPolicy = StrictMode.getThreadPolicy();
 		ThreadPolicy newPolicy = new ThreadPolicy.Builder(oldPolicy).permitDiskReads().permitDiskWrites().build();
 		StrictMode.setThreadPolicy(newPolicy);
-
+		boolean cached = false;
 		try {
 			// No permissions enforced
 
@@ -1392,8 +1392,13 @@ public class PrivacyService extends IPrivacyService.Stub {
 			synchronized (mPoliciesCache) {
 				if (mPoliciesCache.containsKey(key)) {
 					result = mPoliciesCache.get(key);
-					return result;
+					cached = true;
 				}
+			}
+
+			if (cached)
+			{
+				return result;
 			}
 
 			// No persmissions required
@@ -1402,12 +1407,12 @@ public class PrivacyService extends IPrivacyService.Stub {
 				return result;
 
 			// Precompile statement when needed
+			stmtGetPolicy = db.compileStatement("SELECT value FROM " + cTableSetting + " WHERE uid=? AND type=? AND name=?");
+			String sql = "SELECT * FROM " + cTablePolicy + " WHERE uid=" + key.getUid() +
+					" AND category='" + key.getCategory() + "'";
+			//stmtGetPolicy = db.compileStatement(sql);
 
-				String sql = "SELECT * FROM " + cTablePolicy + " WHERE uid=" + key.getUid() +
-						" AND category='" + key.getCategory() + "'";
-				//stmtGetPolicy = db.compileStatement(sql);
-
-
+			Util.log(Log.WARN, "PrivacyService.getPolicy.not cached");
 			// Execute statement
 			boolean found = false;
 			mLock.readLock().lock();
@@ -1416,11 +1421,15 @@ public class PrivacyService extends IPrivacyService.Stub {
 				try {
 					try {
 						synchronized (stmtGetPolicy) {
-							stmtGetPolicy.clearBindings();
+
 							Cursor res = db.rawQuery(sql, null);
+							Util.log(Log.WARN, "PrivacyService.getPolicy.after policy query");
 							if (res.moveToFirst())
 							{
+								Util.log(Log.WARN, "PrivacyService.getPolicy.after policy query, before setting overrides");
 								result.setOverrides(res.getInt(3));
+								Util.log(Log.WARN, "PrivacyService.getPolicy.after policy query, after setting overrides");
+
 							}
 							//ResultSet rs = stmtGetPolicy.
 							found = true;
@@ -1430,15 +1439,20 @@ public class PrivacyService extends IPrivacyService.Stub {
 							res = db.rawQuery(sql, null);
 							if (res.moveToFirst())
 							{
+								Util.log(Log.WARN, "PrivacyService.getPolicy.after rule query, before iterating");
 								ArrayList<PolicyRule> prules = new ArrayList<PolicyRule>();
 								do {
+									Util.log(Log.WARN, "PrivacyService.getPolicy.after rule query, in itaration, before creating new rule object");
 									PolicyRule rule = new PolicyRule(res.getString(2), res.getString(3), res.getInt(4));
+									Util.log(Log.WARN, "PrivacyService.getPolicy.after rule query, in itaration, after creating new rule object");
 									prules.add(rule);
 								} while (res.moveToNext());
+								Util.log(Log.WARN, "PrivacyService.getPolicy.settingRules from db to result");
 								result.setRules(prules);
 							}
 						}
-					} catch (SQLiteDoneException ignored) {
+					} catch (Exception e) {
+						Util.log(Log.WARN, "Exception in PrivacyService.getPolicy.gettingRules from db, e=" + e.getMessage());
 					}
 
 					db.setTransactionSuccessful();
@@ -1451,10 +1465,11 @@ public class PrivacyService extends IPrivacyService.Stub {
 
 			// Add to cache
 			if (found) {
+				Util.log(Log.WARN, "PrivacyService.getPolicy.updating cache");
 				synchronized (mPoliciesCache) {
 					if (mPoliciesCache.containsKey(key))
 						mPoliciesCache.remove(key);
-					mPoliciesCache.put(key, result);
+					mPoliciesCache.put(result, result);
 				}
 			}
 		} catch (SQLiteException ex) {
@@ -1473,6 +1488,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 	}
 
 	private void setPolicyInternal(PPolicy p) throws RemoteException {
+		long status;
 		Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal");
 		try {
 			SQLiteDatabase db = getDb();
@@ -1494,8 +1510,13 @@ public class PrivacyService extends IPrivacyService.Stub {
 
 					Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal, insert into policy, ContentValues=" + pvalues.toString());
 					// Insert/update record
-					db.insertWithOnConflict(cTablePolicy, null, pvalues, SQLiteDatabase.CONFLICT_REPLACE);
-
+					status = db.insertWithOnConflict(cTablePolicy, null, pvalues, SQLiteDatabase.CONFLICT_REPLACE);
+					if (status > 0) {
+						Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal.policy successful, status=" + status);
+					}
+					else {
+						Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal.policy was unsuccessful");
+					}
 					//delete previous rules
 					db.delete(cTableRule, "uid=? AND category=?",
 							new String[]{Integer.toString(p.getUid()), p.getCategory()});
@@ -1513,7 +1534,13 @@ public class PrivacyService extends IPrivacyService.Stub {
 
 							Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal insert into rule, r=" + r.toString());
 							// Insert/update record
-							db.insertWithOnConflict(cTableRule, null, values, SQLiteDatabase.CONFLICT_NONE);
+							status = db.insertWithOnConflict(cTableRule, null, values, SQLiteDatabase.CONFLICT_NONE);
+							if (status > 0) {
+								Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal.rule successful, status=" + status);
+							}
+							else {
+								Util.log(Log.WARN, "Inside PrivacyService.setPolicyInternal.rule was unsuccessful");
+							}
 						}
 					}
 					db.setTransactionSuccessful();
@@ -1521,7 +1548,7 @@ public class PrivacyService extends IPrivacyService.Stub {
 				}
 				catch (Exception e)
 				{
-					Util.log(Log.ERROR, "Insert into policy table or rule table gone wrong, message=" + e.getMessage());
+					Util.log(Log.ERROR, "Exception in XPrivacyService.setPolicyInternal : Insert into policy table or rule table gone wrong, message=" + e.getMessage());
 				}
 				finally {
 					db.endTransaction();

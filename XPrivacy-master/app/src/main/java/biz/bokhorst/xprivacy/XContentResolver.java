@@ -215,7 +215,7 @@ public class XContentResolver extends XHook {
 
 	@Override
 	protected void before(XParam param) throws Throwable {
-		Util.log(this, Log.WARN, "$$$$$$$$ before method -  XContentResolver NIUIE");
+		Util.log(this, Log.WARN, "$$$$$$$$ before method -  XContentResolver");
 		switch (mMethod) {
 		case getCurrentSync:
 		case getCurrentSyncs:
@@ -419,8 +419,24 @@ public class XContentResolver extends XHook {
 				if (methodName.equals("contacts/contacts") || methodName.equals("contacts/data")
 						|| methodName.equals("contacts/phone_lookup") || methodName.equals("contacts/raw_contacts")) {
 					int uid = Binder.getCallingUid();
+					PPolicy p = PrivacyManager.getPolicy(uid, PrivacyManager.cContacts);
+					if (p.hasRules())
+					{
+						MatrixCursor result = new MatrixCursor(cursor.getColumnNames());
+						//Util.log(this, Log.WARN, "cursor columns " + cursor.getColumnNames().toString());
+						//Util.log(this, Log.WARN, "cursor.getColumnCount " + cursor.getColumnCount());
+						if (cursor.moveToFirst()) {
+							do {
+								//Util.log(this, Log.WARN, "cursor.Name " + cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+								//Util.log(this, Log.WARN, "cursor.Name " + cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 
-					if (isRestrictedExtra(param, PrivacyManager.cContacts, methodName, uri)) {
+								filterData(cursor, result, cursor.getColumnCount(), p);
+							} while (cursor.moveToNext());
+						}
+						param.setResult(result);
+						cursor.close();
+					}
+					else if (isRestrictedExtra(param, PrivacyManager.cContacts, methodName, uri)) {
 						Util.log(this, Log.WARN, "uid=" + uid + " inside XContentResolver on isRestrictedExtra branch");
 						// Get ID from URL if any
 						int urlid = -1;
@@ -695,37 +711,58 @@ public class XContentResolver extends XHook {
 		}
 	}
 
+	private void filterData(Cursor cursor, MatrixCursor result, int count, PPolicy p) {
+		int index;
+		try {
+			Object[] columns = new Object[count];
+
+			//String compareValue = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+			String compareValue = cursor.getString(cursor.getColumnIndex(GranularPermissions.getInstance().get(PrivacyManager.cContacts)));
+			Util.log(Log.WARN, "Inside XContentProvider.filterData, comparing " + p.toString() + " with " + compareValue);
+			if (compareValue != null && CompareRule.isAllowed(compareValue, p)) {
+
+				for (int i = 0; i < count; i++) {
+					switch (cursor.getType(i)) {
+						case Cursor.FIELD_TYPE_NULL:
+							columns[i] = null;
+							break;
+						case Cursor.FIELD_TYPE_INTEGER:
+							columns[i] = cursor.getInt(i);
+							break;
+						case Cursor.FIELD_TYPE_FLOAT:
+							columns[i] = cursor.getFloat(i);
+							break;
+						case Cursor.FIELD_TYPE_STRING:
+							columns[i] = cursor.getString(i);
+							break;
+						case Cursor.FIELD_TYPE_BLOB:
+							columns[i] = cursor.getBlob(i);
+							break;
+						default:
+							Util.log(this, Log.WARN, "Unknown cursor data type=" + cursor.getType(i));
+					}
+				}
+				result.addRow(columns);
+			}
+
+		} catch (Throwable ex) {
+			String buf = " Stack trace";
+			for (StackTraceElement ste : ex.getStackTrace())
+			{
+				buf += ste.toString() + "\n";
+			}
+			Util.log(Log.ERROR, "Exception in XContentResolver.filterData, ex=" + ex.getMessage() + buf);
+		}
+	}
+
 	private void fillColumnsWithFakeData(Cursor cursor, MatrixCursor result, int count) {
 		int index;
 		try {
 			SecureRandom random = new SecureRandom();
 			Object[] columns = new Object[count];
 
-			String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-			Util.log(this, Log.WARN, "Jeff vs " + name);
-		if (name.compareTo("Jeff") == 0) {
-
 			for (int i = 0; i < count; i++) {
-				switch (cursor.getType(i)) {
-					case Cursor.FIELD_TYPE_NULL:
-						columns[i] = null;
-						break;
-					case Cursor.FIELD_TYPE_INTEGER:
-						columns[i] = cursor.getInt(i);
-						break;
-					case Cursor.FIELD_TYPE_FLOAT:
-						columns[i] = cursor.getFloat(i);
-						break;
-					case Cursor.FIELD_TYPE_STRING:
-						columns[i] = cursor.getString(i);
-						break;
-					case Cursor.FIELD_TYPE_BLOB:
-						columns[i] = cursor.getBlob(i);
-						break;
-					default:
-						Util.log(this, Log.WARN, "Unknown cursor data type=" + cursor.getType(i));
-				}
-/*
+
 				switch (cursor.getType(i)) {
 					case Cursor.FIELD_TYPE_NULL:
 						columns[i] = null;
@@ -748,11 +785,10 @@ public class XContentResolver extends XHook {
 					default:
 						Util.log(this, Log.WARN, "Unknown cursor data type=" + cursor.getType(i));
 				}
-				*/
 			}
 
 			//generate alpha string for contact name
-	/*		index = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+			index = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 			if (index > -1)
 			{
 				columns[index] = Util.generateRandomAlpha(cursor.getString(index).length());
@@ -763,8 +799,7 @@ public class XContentResolver extends XHook {
 			{
 				columns[index] = Util.generateFakePhoneNumber();
 			}
-	*/
-		}
+
 			result.addRow(columns);
 		} catch (Throwable ex) {
 			Util.bug(this, ex);
