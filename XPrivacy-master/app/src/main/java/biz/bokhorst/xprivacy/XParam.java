@@ -108,13 +108,16 @@ public class XParam {
 	public String toString() {
 		String str = super.toString();
 		str += " + ParamsList:";
-		for (Object o : args)
-		{
+		for (Object o : args) {
 			if (o != null)
-				str += o.toString() + ":";
+				str += o.toString() + ":-:";
 			else
-				str += "NULLEntry:";
+				str += "NULLEntry:-:";
 		}
+		if (getResult() != null)
+			str += "  Result=" + getResult().toString();
+		else
+			str += "  Result=null";
 		return str;
 	}
 }

@@ -215,7 +215,7 @@ public class XContentResolver extends XHook {
 
 	@Override
 	protected void before(XParam param) throws Throwable {
-		Util.log(this, Log.WARN, "$$$$$$$$ before method -  XContentResolver");
+		Util.log(this, Log.WARN, "XContentResolver.before()");
 		switch (mMethod) {
 		case getCurrentSync:
 		case getCurrentSyncs:
@@ -292,7 +292,9 @@ public class XContentResolver extends XHook {
 
 		case query:
 		case Srv_query:
-			Util.log(this, Log.WARN, "after method, XContentResolver, Srv_query/query case");
+			Util.log(this, Log.WARN, "after method, XContentResolver, Srv_query/query case, param=" + param.toString());
+			if (param.getResult() != null)
+				Util.log(this, Log.WARN, "XContentResolver.after() - Srv_query/query case, uid=" + Binder.getCallingUid() + " ,param.getResult is class=" + param.getResult().getClass().getName());
 			handleUriAfter(param);
 			break;
 
@@ -358,14 +360,21 @@ public class XContentResolver extends XHook {
 
 	@SuppressLint("DefaultLocale")
 	private void handleUriAfter(XParam param) throws Throwable {
+		Util.log(this, Log.WARN, "START OF XContentResolver.handleURIAfter - uid=" + Binder.getCallingUid());
 		// Check URI
+
 		if (param.args.length > 1 && param.args[0] instanceof Uri && param.getResult() != null) {
 			String uri = ((Uri) param.args[0]).toString().toLowerCase();
 			String[] projection = (param.args[1] instanceof String[] ? (String[]) param.args[1] : null);
 			String selection = (param.args[2] instanceof String ? (String) param.args[2] : null);
 			Cursor cursor = (Cursor) param.getResult();
-
+			Util.log(this, Log.WARN, "START OF XContentResolver.handleURIAfter inside first if");
+			if (uri.startsWith("content://com.whatsapp.provider.contact/contacts"))
+			{
+				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.whatsapp.provider.contact/contacts");
+			}
 			if (uri.startsWith("content://applications")) {
+				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://applications");
 				// Applications provider: allow selected applications
 				if (isRestrictedExtra(param, PrivacyManager.cSystem, "ApplicationsProvider", uri)) {
 					MatrixCursor result = new MatrixCursor(cursor.getColumnNames());
@@ -381,6 +390,7 @@ public class XContentResolver extends XHook {
 				}
 
 			} else if (uri.startsWith("content://com.google.android.gsf.gservices")) {
+				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.google.android.gsf.gservices");
 				// Google services provider: block only android_id
 				if (param.args.length > 3 && param.args[3] != null) {
 					List<String> listSelection = Arrays.asList((String[]) param.args[3]);
@@ -409,6 +419,7 @@ public class XContentResolver extends XHook {
 			} else if (uri.startsWith("content://com.android.contacts/contacts/name_phone_or_email")) {
 
 				// Do nothing
+				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.android.contacts/contacts/name_phone_or_email");
 
 			} else if (uri.startsWith("content://com.android.contacts/")
 					&& !uri.equals("content://com.android.contacts/")) {
@@ -418,6 +429,7 @@ public class XContentResolver extends XHook {
 				String methodName = components[0] + "/" + components[1].split("\\?")[0];
 				if (methodName.equals("contacts/contacts") || methodName.equals("contacts/data")
 						|| methodName.equals("contacts/phone_lookup") || methodName.equals("contacts/raw_contacts")) {
+					Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, contacts/raw_contacts");
 					int uid = Binder.getCallingUid();
 					PPolicy p = PrivacyManager.getPolicy(uid, PrivacyManager.cContacts);
 					if (p.hasRules())
@@ -521,7 +533,7 @@ public class XContentResolver extends XHook {
 
 			} else {
 				// Other uri restrictions
-				String restrictionName = null;
+				/*String restrictionName = null;
 				String methodName = null;
 				if (uri.startsWith("content://browser")) {
 					restrictionName = PrivacyManager.cBrowser;
@@ -602,9 +614,10 @@ public class XContentResolver extends XHook {
 						param.setResult(result);
 						cursor.close();
 					}
-				}
+				}*/
 			}
 		}
+		Util.log(this, Log.WARN, "END OF XContentResolver.handleURIAfter - uid=" + Binder.getCallingUid());
 	}
 
 	private void handleCallAfter(XParam param) throws Throwable {
@@ -713,12 +726,35 @@ public class XContentResolver extends XHook {
 
 	private void filterData(Cursor cursor, MatrixCursor result, int count, PPolicy p) {
 		int index;
+		/*String buff = "[";
+		for (String colName : cursor.getColumnNames())
+		{
+			if (cursor.getType(cursor.getColumnIndex(colName)) == Cursor.FIELD_TYPE_STRING)
+			{
+				String val = cursor.getString(cursor.getColumnIndex(colName));
+				buff += colName + "=" + val + "|";
+			}
+			else if (cursor.getType(cursor.getColumnIndex(colName)) == Cursor.FIELD_TYPE_INTEGER)
+			{
+				Integer val = cursor.getInt(cursor.getColumnIndex(colName));
+				buff += colName + "=" + val  + "|";
+			}
+			else
+			{
+				buff += colName + " type " + cursor.getType(cursor.getColumnIndex(colName))  + "|";
+
+			}
+		}
+		buff+= "]";
+
+		Util.log(Log.WARN, "MATRIXCURSOR: " + buff);
+		*/
 		try {
 			Object[] columns = new Object[count];
 
 			//String compareValue = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
 			String compareValue = cursor.getString(cursor.getColumnIndex(GranularPermissions.getInstance().get(PrivacyManager.cContacts)));
-			Util.log(Log.WARN, "Inside XContentProvider.filterData, comparing " + p.toString() + " with " + compareValue);
+			Util.log(Log.WARN, "Inside XContentProvider.filterData, xcomparing " + p.toString() + " with " + compareValue);
 			if (compareValue != null && CompareRule.isAllowed(compareValue, p)) {
 
 				for (int i = 0; i < count; i++) {
@@ -742,10 +778,21 @@ public class XContentResolver extends XHook {
 							Util.log(this, Log.WARN, "Unknown cursor data type=" + cursor.getType(i));
 					}
 				}
+				/*index = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+				if (index > -1)
+				{
+					columns[index] = "Borfas" + Util.generateRandomAlpha(10);
+				}
+				//generate fake phone number
+				index = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+				if (index > -1)
+				{
+					columns[index] = "+40724434001";
+				}*/
 				result.addRow(columns);
 			}
 
-		} catch (Throwable ex) {
+		} catch (Exception ex) {
 			String buf = " Stack trace";
 			for (StackTraceElement ste : ex.getStackTrace())
 			{

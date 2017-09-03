@@ -73,6 +73,7 @@ public class Util {
 	public static int NOTIFY_UPGRADE = 5;
 	public static int NOTIFY_UPDATE = 6;
 	public static int NOTIFY_CORRUPT = 7;
+	private final static boolean LOGGING_ENABLED = true;
 
 	private static char[] alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIFKLMNOPQRSTUVWXYZ".toCharArray();
 	public static char [] alphaNumeric = "abcdefghijklmnopqrstuvwxyzABCDEFGHIFKLMNOPQRSTUVWXYZ0123456789".toCharArray();
@@ -81,6 +82,10 @@ public class Util {
 	public static void log(XHook hook, int priority, String msg) {
 		// Check if logging enabled
 		int uid = Process.myUid();
+		if (!LOGGING_ENABLED)
+		{
+			return;
+		}
 		if (!mLogDetermined && uid > 0) {
 			mLogDetermined = true;
 			try {
@@ -111,7 +116,10 @@ public class Util {
 	}
 
 	public static void log(int priority, String msg) {
-
+		if (!LOGGING_ENABLED)
+		{
+			return;
+		}
 		Log.println(priority, "MyXPrivacy", msg);
 	}
 	/* returns an int in the range [0,9] */
