@@ -51,13 +51,19 @@ public class XIoBridge extends XHook {
 	// @formatter:on
 
 	private enum Methods {
-		open, connect
+		open, connect, access, openFile, openAssetFileDescriptor, openFileDescriptor, openInputStream
 	};
 
 	public static List<XHook> getInstances() {
 		List<XHook> listHook = new ArrayList<XHook>();
-		listHook.add(new XIoBridge(Methods.connect, PrivacyManager.cInternet));
 		listHook.add(new XIoBridge(Methods.open, PrivacyManager.cStorage));
+		listHook.add(new XIoBridge(Methods.connect, PrivacyManager.cInternet));
+		listHook.add(new XIoBridge(Methods.access, PrivacyManager.cStorage));
+		listHook.add(new XIoBridge(Methods.openFile, PrivacyManager.cStorage));
+		listHook.add(new XIoBridge(Methods.openAssetFileDescriptor, PrivacyManager.cStorage));
+		listHook.add(new XIoBridge(Methods.openFileDescriptor, PrivacyManager.cStorage));
+		listHook.add(new XIoBridge(Methods.openInputStream, PrivacyManager.cStorage));
+
 		listHook.add(new XIoBridge(Methods.open, PrivacyManager.cIdentification, "/proc"));
 		listHook.add(new XIoBridge(Methods.open, PrivacyManager.cIdentification, "/system/build.prop"));
 		listHook.add(new XIoBridge(Methods.open, PrivacyManager.cIdentification, "/sys/block/.../cid"));
@@ -69,14 +75,18 @@ public class XIoBridge extends XHook {
 	@Override
 	@SuppressLint("SdCardPath")
 	protected void before(XParam param) throws Throwable {
-		Util.log(this, Log.DEBUG, "Inside XIOBridge.before(), uid=" + Binder.getCallingUid());
+		int uid = Binder.getCallingUid();
+		Util.log(this, Log.DEBUG, "Inside XIOBridge.before(), uid=" + uid);
+		if (param != null)
+		{
+			Util.log(this, Log.DEBUG, "Inside XIOBridge.before(), uid=" + uid);
+		}
 		if (mMethod == Methods.connect) {
 			if (param.args.length > 2 && param.args[1] instanceof InetAddress && param.args[2] instanceof Integer) {
 				InetAddress address = (InetAddress) param.args[1];
 				int port = (Integer) param.args[2];
 
 				String hostName;
-				int uid = Binder.getCallingUid();
 				boolean resolve = PrivacyManager.getSettingBool(uid, PrivacyManager.cSettingResolve, false);
 				boolean noresolve = PrivacyManager.getSettingBool(-uid, PrivacyManager.cSettingNoResolve, false);
 				if (resolve && !noresolve)
@@ -106,7 +116,7 @@ public class XIoBridge extends XHook {
 						if (TextUtils.isEmpty(mMediaStorage))
 							mMediaStorage = "/data/media";
 					}
-					Util.log(this, Log.WARN, "XIoBridge before method, var filename = " + fileName);
+					Util.log(this, Log.WARN, "XIoBridge.before().open, uid="+ uid +", var filename = " + fileName);
 					// Check storage folders
 					if (fileName.startsWith("/sdcard")
 							|| (mExternalStorage != null && fileName.startsWith(mExternalStorage))
@@ -117,7 +127,7 @@ public class XIoBridge extends XHook {
 						if (isRestrictedExtra(param, fileName))
 							param.setThrowable(new FileNotFoundException("XPrivacy_IO_0"));
 
-				} else if (fileName.startsWith(mFileName) || mFileName.contains("...")) {
+				} else if (fileName != null && mFileName != null && (fileName.startsWith(mFileName) || mFileName.contains("..."))) {
 					// Zygote, Android
 					if (Util.getAppId(Process.myUid()) == Process.SYSTEM_UID)
 						return;
@@ -143,13 +153,33 @@ public class XIoBridge extends XHook {
 							param.setThrowable(new FileNotFoundException("XPrivacy_IO_3"));
 					}
 				}
+				if (param.method.getName().compareTo("open") == 0)
+				{
+
+					String path = (String)param.args[0];
+
+					if (path != null) {
+						Util.log(this, Log.WARN, "XIoBridge.before().open uid=" + uid + ", var filename = " + fileName);
+						PPolicy p = PrivacyManager.getPolicy(uid, PrivacyManager.cStorage);
+						if (p.hasRules()) {
+							if (!CompareRule.isAllowed(path, p)) {
+								Util.log(this, Log.WARN, "XIoBridge.before().open, denying " + path + " to uid=" + uid);
+								param.args[0] = "/storage/emulated/0/Documents/dummy.png";
+							}
+						}
+					}
+				}
 			}
+		}
+		else if(mMethod == Methods.access) {
+			Util.log(this, Log.WARN, "XIoBridge.before().access");
+		} else {
+			//Util.log(this, Log.WARN, "Unknown method=" + param.method.getName());
+		}
 
-		} else
-			Util.log(this, Log.WARN, "Unknown method=" + param.method.getName());
-
+/*
 		if (param != null) {
-			Util.log(this, Log.WARN, "XIoBridge before method " + param.method.getName() + " | " + param.toString());
+			//Util.log(this, Log.WARN, "XIoBridge before method " + param.method.getName() + " | " + param.toString());
 		} else {
 			//Util.log(this, Log.WARN, "Debugging param: null");
 		}
@@ -160,7 +190,9 @@ public class XIoBridge extends XHook {
 			PrivacyService ps = PrivacyService.getPrivacyService();
 			ps.onDemandWindow();
 		}
-		if (param != null) {
+
+*/
+		/*if (param != null) {
 			if (isRestrictedExtra(param, PrivacyManager.cStorage, param.method.getName(), null)) {
 				//if (Binder.getCallingUid() == 10141) {
 					param.args[0] = null;
@@ -175,7 +207,7 @@ public class XIoBridge extends XHook {
 					param.args[0] = "/storage/emulated/0/DCIM/fake_data.txt";
 				}
 			}
-		}
+		}*/
 	}
 
 	@Override
@@ -183,15 +215,7 @@ public class XIoBridge extends XHook {
 		// Do nothing
 		Util.log(this, Log.WARN, "Inside XIoBridge.after(), uid=" + Binder.getCallingUid());
 		if (param != null) {
-			Util.log(this, Log.WARN, "XIoBridge after method " + param.method.getName() + " | " + param.toString());
-			if (param.args.length > 0) {
-				String fileName = (String) param.args[0];
-				Util.log(this, Log.WARN, "XIoBridge.after() filename " + fileName);
-			}
-			/*if (Binder.getCallingUid() == 10141 && param.method.getName().compareTo("open") == 0)
-			{
-				param.args[0] = "/storage/emulated/0/DCIM/fake_data.txt";
-			}*/
+			Util.log(this, Log.WARN, "XIoBridge.after() param=" + param.toString());
 		}
 	}
 }

@@ -247,9 +247,7 @@ public class XContentResolver extends XHook {
 
 	@Override
 	protected void after(XParam param) throws Throwable {
-		Util.log(this, Log.WARN, "$$$$$$$$ after method -  XContentResolver");
-
-		Util.log(this, Log.WARN, "mMethod=" + mMethod + "|param.method=" + param.method.getName() + "|param.toString=" + param.toString());
+		Util.log(this, Log.WARN, "XContentResolver.after()");
 
 		switch (mMethod) {
 		case getCurrentSync:
@@ -274,11 +272,11 @@ public class XContentResolver extends XHook {
 		case openTypedAssetFileDescriptor:
 		case openAssetFile:
 		case openFile:
-			Util.log(this, Log.WARN, "after method, XContentResolver, case openFile");
-			if (param != null)
+			Util.log(this, Log.WARN, "XContentResolver.after, case openFile");
+			/*if (param != null)
 			{
 				Util.log(this, Log.WARN, "param.method=" + param.method.getName());
-			}
+			}*/
 			if (param.args.length > 0 && param.args[0] instanceof Uri) {
 				String uri = param.args[0].toString();
 				if (isRestrictedExtra(param, uri))
@@ -292,9 +290,10 @@ public class XContentResolver extends XHook {
 
 		case query:
 		case Srv_query:
-			Util.log(this, Log.WARN, "after method, XContentResolver, Srv_query/query case, param=" + param.toString());
+			/*Util.log(this, Log.WARN, "after method, XContentResolver, Srv_query/query case, param=" + param.toString());
 			if (param.getResult() != null)
 				Util.log(this, Log.WARN, "XContentResolver.after() - Srv_query/query case, uid=" + Binder.getCallingUid() + " ,param.getResult is class=" + param.getResult().getClass().getName());
+				*/
 			handleUriAfter(param);
 			break;
 
@@ -353,14 +352,16 @@ public class XContentResolver extends XHook {
 						if (added)
 							param.setObjectExtra("column_added", added);
 					}
-				Util.log(this, Log.WARN, "Inside XContentResolver,handleUriBefore, after call to isRestrictedExtra");
+				//Util.log(this, Log.WARN, "Inside XContentResolver,handleUriBefore, after call to isRestrictedExtra");
 			}
 		}
 	}
 
 	@SuppressLint("DefaultLocale")
+	//content://com.whatsapp.provider.contact/contacts:
+	// [Ljava.lang.String;@d4065cc:is_whatsapp_user = 1 AND wa_contacts.jid != ? AND (raw_contact_id > 0 OR raw_contact_id = -2):[Ljava.lang.String;@1ac50bd:display_name, wa_contacts.jid, phone_type ASC:NULLEntry:
 	private void handleUriAfter(XParam param) throws Throwable {
-		Util.log(this, Log.WARN, "START OF XContentResolver.handleURIAfter - uid=" + Binder.getCallingUid());
+		//Util.log(this, Log.WARN, "START OF XContentResolver.handleURIAfter - uid=" + Binder.getCallingUid());
 		// Check URI
 
 		if (param.args.length > 1 && param.args[0] instanceof Uri && param.getResult() != null) {
@@ -371,10 +372,10 @@ public class XContentResolver extends XHook {
 			Util.log(this, Log.WARN, "START OF XContentResolver.handleURIAfter inside first if");
 			if (uri.startsWith("content://com.whatsapp.provider.contact/contacts"))
 			{
-				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.whatsapp.provider.contact/contacts");
+				//Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.whatsapp.provider.contact/contacts");
 			}
 			if (uri.startsWith("content://applications")) {
-				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://applications");
+				//Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://applications");
 				// Applications provider: allow selected applications
 				if (isRestrictedExtra(param, PrivacyManager.cSystem, "ApplicationsProvider", uri)) {
 					MatrixCursor result = new MatrixCursor(cursor.getColumnNames());
@@ -390,7 +391,7 @@ public class XContentResolver extends XHook {
 				}
 
 			} else if (uri.startsWith("content://com.google.android.gsf.gservices")) {
-				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.google.android.gsf.gservices");
+				//Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.google.android.gsf.gservices");
 				// Google services provider: block only android_id
 				if (param.args.length > 3 && param.args[3] != null) {
 					List<String> listSelection = Arrays.asList((String[]) param.args[3]);
@@ -410,26 +411,26 @@ public class XContentResolver extends XHook {
 								result.respond(cursor.getExtras());
 								param.setResult(result);
 								cursor.close();
-							} else
-								Util.log(this, Log.ERROR,
-										"Unexpected result uri=" + uri + " columns=" + cursor.getColumnNames());
+							} else {}
+								//Util.log(this, Log.ERROR,
+										//"Unexpected result uri=" + uri + " columns=" + cursor.getColumnNames());
 						}
 				}
 
 			} else if (uri.startsWith("content://com.android.contacts/contacts/name_phone_or_email")) {
 
 				// Do nothing
-				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.android.contacts/contacts/name_phone_or_email");
+				//Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.android.contacts/contacts/name_phone_or_email");
 
 			} else if (uri.startsWith("content://com.android.contacts/")
 					&& !uri.equals("content://com.android.contacts/")) {
-				Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.android.contacts/");
+				//Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, content://com.android.contacts/");
 				// Contacts provider: allow selected contacts
 				String[] components = uri.replace("content://com.android.", "").split("/");
 				String methodName = components[0] + "/" + components[1].split("\\?")[0];
 				if (methodName.equals("contacts/contacts") || methodName.equals("contacts/data")
 						|| methodName.equals("contacts/phone_lookup") || methodName.equals("contacts/raw_contacts")) {
-					Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, contacts/raw_contacts");
+					//Util.log(this, Log.WARN, "handleURIAfter method, XContentResolver, contacts/raw_contacts");
 					int uid = Binder.getCallingUid();
 					PPolicy p = PrivacyManager.getPolicy(uid, PrivacyManager.cContacts);
 					if (p.hasRules())
@@ -449,7 +450,7 @@ public class XContentResolver extends XHook {
 						cursor.close();
 					}
 					else if (isRestrictedExtra(param, PrivacyManager.cContacts, methodName, uri)) {
-						Util.log(this, Log.WARN, "uid=" + uid + " inside XContentResolver on isRestrictedExtra branch");
+						//Util.log(this, Log.WARN, "uid=" + uid + " inside XContentResolver on isRestrictedExtra branch");
 						// Get ID from URL if any
 						int urlid = -1;
 						if ((methodName.equals("contacts/contacts") || methodName.equals("contacts/phone_lookup"))
@@ -487,16 +488,16 @@ public class XContentResolver extends XHook {
 									copyColumns(cursor, result, listColumn.size());
 							}
 						else
-							Util.log(this, Log.WARN, "ID missing URI=" + uri + " added=" + added + "/" + cid
-									+ " columns=" + TextUtils.join(",", cursor.getColumnNames()) + " projection="
-									+ (projection == null ? "null" : TextUtils.join(",", projection)) + " selection="
-									+ selection);
+							//Util.log(this, Log.WARN, "ID missing URI=" + uri + " added=" + added + "/" + cid
+								//	+ " columns=" + TextUtils.join(",", cursor.getColumnNames()) + " projection="
+								//	+ (projection == null ? "null" : TextUtils.join(",", projection)) + " selection="
+								//	+ selection);
 
 						result.respond(cursor.getExtras());
 						param.setResult(result);
 						cursor.close();
 					}
-					else if (isFakeDataExtra(param, PrivacyManager.cContacts, methodName, uri)) {
+					/*else if (isFakeDataExtra(param, PrivacyManager.cContacts, methodName, uri)) {
 						Util.log(this, Log.WARN, "uid=" + uid + " inside XContentResolver on isFakeDataExtra branch");
 						//if (uid == 10145) {
 						MatrixCursor result = new MatrixCursor(cursor.getColumnNames());
@@ -513,7 +514,7 @@ public class XContentResolver extends XHook {
 						param.setResult(result);
 						cursor.close();
 						//}
-					}
+					}*/
 				} else {
 					methodName = null;
 					if (uri.startsWith("content://com.android.contacts/profile"))
@@ -617,7 +618,7 @@ public class XContentResolver extends XHook {
 				}*/
 			}
 		}
-		Util.log(this, Log.WARN, "END OF XContentResolver.handleURIAfter - uid=" + Binder.getCallingUid());
+		//Util.log(this, Log.WARN, "END OF XContentResolver.handleURIAfter - uid=" + Binder.getCallingUid());
 	}
 
 	private void handleCallAfter(XParam param) throws Throwable {

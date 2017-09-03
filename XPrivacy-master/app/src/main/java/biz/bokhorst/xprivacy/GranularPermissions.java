@@ -18,7 +18,7 @@ public class GranularPermissions {
     private Map<String, String> createMap() {
         Map<String, String> result = new HashMap<String, String>();
         result.put(PrivacyManager.cContacts, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME.toString());
-        result.put(PrivacyManager.cStorage, "Path");
+        result.put(PrivacyManager.cStorage, "path");
         return result;
     }
 
